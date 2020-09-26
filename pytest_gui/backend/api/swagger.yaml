@@ -21,14 +21,20 @@ paths:
       description: "Get the list of tests"
       responses:
         200:
-          description: "Successful got test list operation"
+          description: "Successfully got test list operation"
           schema:
             type: "array"
             items:
               properties:
-                parent:
-                  type: "string"
                 name:
                   type: "string"
-                selected:
-                  type: "boolean"
+                tests:
+                  type: "array"
+                  items:
+                    properties:
+                      name:
+                        type: "string"
+                      line:
+                        type: "integer"
+                      selected:
+                        type: "boolean"
