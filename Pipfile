@@ -6,7 +6,7 @@ verify_ssl = true
 [packages]
 python-decouple = "*"
 flask = "*"
-connexion = "*"
+connexion = {extras = ["swagger-ui"],version = "*"}
 
 [requires]
 python_version = "3.8"

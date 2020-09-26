@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f26c5a5d2faaae22d70b399edd194db02d9cc062b0a747f90fbc018e3c6393b8"
+            "sha256": "7351a49d44c970537e5a7852936dad2ea0ed7e2a12ff9d4592b1d5099e4496a3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -52,6 +52,9 @@
             "version": "==1.2.2"
         },
         "connexion": {
+            "extras": [
+                "swagger-ui"
+            ],
             "hashes": [
                 "sha256:1ccfac57d4bb7adf4295ba6f5e48f5a1f66057df6a0713417766c9b5235182ee",
                 "sha256:5439e9659a89c4380d93a07acfbf3380d70be4130574de8881e5f0dfec7ad0e2"
@@ -190,6 +193,13 @@
                 "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"
             ],
             "version": "==1.15.0"
+        },
+        "swagger-ui-bundle": {
+            "hashes": [
+                "sha256:f5255f786cde67a2638111f4a7d04355836743198a83c4ecbe815d9fc384b0c8",
+                "sha256:f5691167f2e9f73ecbe8229a89454ae5ea958f90bb0d4583ed7adaae598c4122"
+            ],
+            "version": "==0.0.8"
         },
         "urllib3": {
             "hashes": [
