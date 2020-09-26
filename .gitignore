@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# vscode include only tasks
 .vscode/*
+!.vscode/tasks.json
 
 # C extensions
 *.so
