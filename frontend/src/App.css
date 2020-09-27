@@ -1,5 +1,8 @@
 .App {
+  background-color: rgb(40, 44, 52);
+  color: rgb(171, 178, 178);
   text-align: center;
+  height: 100%;
 }
 
 .navbar {
@@ -29,4 +32,18 @@
 .nav-item:hover {
   background-color: rgb(40, 44, 52);
   transition: 0.2s;
+}
+
+.container.inner {
+  width: 90%;
+  margin: 80px auto;
+  padding: 0;
+  border: 2px solid rebeccapurple;
+  background-color: rgb(40, 44, 52);
+}
+
+.container > .row {
+  background-color: rgb(33, 37, 43);
+  width: 100%;
+  margin: 0 0;
 }

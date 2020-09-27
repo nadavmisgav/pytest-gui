@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, Container, Row } from "react-bootstrap";
 import Tests from "./Tests";
 import Actions from "./Actions";
 
@@ -12,7 +12,7 @@ function App() {
       <Navbar>
         <Navbar.Brand href="#">
           <img
-            src="/logo.png"
+            src="/assets/logo.png"
             width="92"
             height="92"
             className="d-inline-block align-top"
@@ -25,8 +25,9 @@ function App() {
           </Nav.Item>
         </Nav>
       </Navbar>
-      <Actions />
-      <Tests />
+      <Container className="inner">
+        <Actions />
+      </Container>
     </div>
   );
 }
