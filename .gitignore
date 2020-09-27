@@ -9,6 +9,18 @@ __pycache__/
 
 # NodeJS
 frontend/node_modules/*
+frontend/.pnp
+.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
 
 # Distribution / packaging
 .Python
