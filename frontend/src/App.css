@@ -1,3 +1,32 @@
 .App {
   text-align: center;
 }
+
+.navbar {
+  background-color: rgb(33, 37, 43);
+}
+
+.navbar-brand {
+  margin-left: 10px;
+}
+
+.navbar-nav {
+  max-height: auto;
+}
+
+.nav-item {
+  margin: 0 20px;
+  padding: 20px;
+}
+
+.nav-link {
+  color: rgb(41, 184, 219) !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 24px;
+}
+
+.nav-item:hover {
+  background-color: rgb(40, 44, 52);
+  transition: 0.2s;
+}
