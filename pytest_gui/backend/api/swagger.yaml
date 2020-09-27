@@ -54,16 +54,8 @@ paths:
               properties:
                 name:
                   type: "string"
-                tests:
-                  type: "array"
-                  items:
-                    properties:
-                      name:
-                        type: "string"
-                      line:
-                        type: "integer"
-                      selected:
-                        type: "boolean"
+                description:
+                  type: "string"
   /test:
     get:
       operationId: "test.get"
@@ -80,8 +72,16 @@ paths:
               properties:
                 name:
                   type: "string"
-                description:
-                  type: "string"
+                tests:
+                  type: "array"
+                  items:
+                    properties:
+                      name:
+                        type: "string"
+                      line:
+                        type: "integer"
+                      selected:
+                        type: "boolean"
   /select:
     post:
       operationId: "test.select"
@@ -97,8 +97,6 @@ paths:
           schema:
             type: object
             required:
-              - name
-              - module
               - selected
             properties:
               name:
@@ -109,4 +107,31 @@ paths:
                 type: boolean
       responses:
         201:
-          description: Created
+          description: Selected
+          schema:
+            type: "array"
+            items:
+              properties:
+                name:
+                  type: "string"
+                tests:
+                  type: "array"
+                  items:
+                    properties:
+                      name:
+                        type: "string"
+                      line:
+                        type: "integer"
+                      selected:
+                        type: "boolean"
+
+  /run:
+    get:
+      operationId: "test.run"
+      tags:
+        - "Tests"
+      summary: "Run tests"
+      description: "Run the tests"
+      responses:
+        200:
+          description: "Successfully started running tests"
