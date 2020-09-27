@@ -53,7 +53,7 @@ def generate_messages(conn):
 class PytestWorker:
     def __init__(self, test_dir):
         self.test_dir = test_dir
-        self.tests = None
+        self.modules = None
         self.markers = None
     
     def discover(self):
@@ -70,7 +70,7 @@ class PytestWorker:
         finally:
             listener.close()
         
-        self.tests = self._parse_discover(tests["tests"]) 
+        self.modules = self._parse_discover(tests["tests"]) 
         
     @staticmethod
     def _parse_discover(tests):

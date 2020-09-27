@@ -54,5 +54,59 @@ paths:
               properties:
                 name:
                   type: "string"
+                tests:
+                  type: "array"
+                  items:
+                    properties:
+                      name:
+                        type: "string"
+                      line:
+                        type: "integer"
+                      selected:
+                        type: "boolean"
+  /test:
+    get:
+      operationId: "test.get"
+      tags:
+        - "Tests"
+      summary: "Get all tests"
+      description: "Get the list of tests"
+      responses:
+        200:
+          description: "Successfully got test list operation"
+          schema:
+            type: "array"
+            items:
+              properties:
+                name:
+                  type: "string"
                 description:
                   type: "string"
+  /select:
+    post:
+      operationId: "test.select"
+      tags:
+        - "Tests"
+      summary: Selects a test.
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: test
+          description: The test to select.
+          schema:
+            type: object
+            required:
+              - name
+              - module
+              - selected
+            properties:
+              name:
+                type: string
+              module:
+                type: string
+              selected:
+                type: boolean
+      responses:
+        201:
+          description: Created
