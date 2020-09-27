@@ -4,13 +4,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build",
+      "label": "Build package",
       "type": "shell",
       "command": ["pipenv run pipenv-setup sync &&", "python setup.py sdist"],
       "group": {
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Build all",
+      "type": "shell",
+      "command": [
+        "pipenv run pipenv-setup sync &&",
+        "cd frontend && npm run build && cd ../ &&",
+        "python setup.py sdist"
+      ],
+      "group": "build"
     }
   ]
 }
