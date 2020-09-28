@@ -23,7 +23,7 @@ def get():
     return worker.modules
 
 def run():
-    pass
+    worker.run_tests()
             
     
     

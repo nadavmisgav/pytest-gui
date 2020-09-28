@@ -55,21 +55,22 @@ class PytestWorker:
         self.test_dir = test_dir
         self.modules = None
         self.markers = None
+        self._cur_pid = None
+        self._listener = Listener(ADDRESS)
+    
+    def __del__(self):
+        self._listener.close()
     
     def discover(self):
         # TODO: Handle errors in collect
-        listener = Listener(ADDRESS)
-        
-        p = self._run_pytest(self.test_dir, "--collect-only")
-        conn = listener.accept()
+        p, conn = self._run_pytest(self.test_dir, "--collect-only")
         # TODO: add logging
-        print('connection accepted from', listener.last_accepted)
-        
+        print('connection accepted from', self._listener.last_accepted)
         try:
             tests = json.loads(next(generate_messages(conn))) # Only one message
         finally:
-            listener.close()
-        
+            conn.close()
+
         self.modules = self._parse_discover(tests["tests"]) 
         
     @staticmethod
@@ -87,12 +88,24 @@ class PytestWorker:
         p = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
             
-    @staticmethod
-    def _run_pytest(*args):
-        return subprocess.Popen(['pytest', "-p", PLUGIN_PATH] + list(args), 
-                         stdout=subprocess.PIPE, 
-                         universal_newlines=True)     
+    def run_tests(self):
+        pytest_arg = []
+        for module, tests in self.modules.items():
+            for test in tests:
+                if test["selected"]:
+                    pytest_arg.append(f"\"{module}::{test['name']}\"")
+        
+        p = self._run_pytest(*pytest_arg)
+        self._cur_pid = p.pid
 
+    def _run_pytest(self, *args):
+        print(['pytest', "-p", PLUGIN_PATH] + list(args))
+        p = subprocess.Popen(['pytest', "-p", PLUGIN_PATH] + list(args), 
+                         stdout=subprocess.PIPE, 
+                         universal_newlines=True)
+        print("Waiting for plugin connect")
+        conn = self._listener.accept()
+        return p, conn
 
 worker = PytestWorker(TEST_DIR)
 

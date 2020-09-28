@@ -9,6 +9,8 @@ from contextlib import contextmanager
 
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
+ADDRESS = ('localhost', PLUGIN_PORT)
+
 
 @contextmanager
 def client(address):
@@ -51,13 +53,27 @@ def extract_discovery_errors():
             pass
     return errors
 
-def pytest_collection_finish(session):
-    address = ('localhost', PLUGIN_PORT)
-    with client(address) as conn:
+
+class PytestGuiPlugin:
+    def __init__(self):
+        self._conn = Client(ADDRESS)
+    
+    def __del__(self):
+        self._conn.send('close')
+        self._conn.close()
+        
+    def pytest_collection_finish(self, session):
         tests = extract_discovered_tests(session)
         errors = extract_discovery_errors()
-        conn.send(json.dumps({'tests': tests, 'errors': errors}))
+        self._conn.send(json.dumps({'tests': tests, 'errors': errors}))
 
-def pytest_collectreport(report):
-    if report.failed:
-        collected_errors.append(report)
+    def pytest_collectreport(self, report):
+        if report.failed:
+            collected_errors.append(report)
+
+    def pytest_runtest_logreport(self, report):
+        self._conn.send(json.dumps({'when': report.when, 'outcome': report.outcome}))
+
+
+def pytest_configure(config):
+    config.pluginmanager.register(PytestGuiPlugin())
