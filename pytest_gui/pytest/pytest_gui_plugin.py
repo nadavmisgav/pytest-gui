@@ -12,14 +12,6 @@ PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
 ADDRESS = ('localhost', PLUGIN_PORT)
 
 
-@contextmanager
-def client(address):
-    conn = Client(address)
-    yield conn
-    
-    conn.send('close')
-    conn.close()
-    
 collected_errors = []
 
 def get_line_number(item):
@@ -72,7 +64,12 @@ class PytestGuiPlugin:
             collected_errors.append(report)
 
     def pytest_runtest_logreport(self, report):
-        self._conn.send(json.dumps({'when': report.when, 'outcome': report.outcome}))
+        self._conn.send(json.dumps({
+            'when': report.when,
+            'outcome': report.outcome,
+            "nodeid": report.nodeid,
+            "duration": report.duration
+            }))
 
 
 def pytest_configure(config):

@@ -43,18 +43,24 @@ def _filter_only_custom_markers(out):
         
 def generate_messages(conn):
     while True:
-        msg = conn.recv()
+        try:
+            msg = conn.recv()
+        except EOFError:
+            break
+            
         if msg == 'close':
             conn.close()
             break
         yield msg
-    
+        
 
 class PytestWorker:
     def __init__(self, test_dir):
         self.test_dir = test_dir
         self.modules = None
         self.markers = None
+        self.tests_running = False
+        self.test_stream_connection = None
         self._cur_pid = None
         self._listener = Listener(ADDRESS)
     
@@ -70,8 +76,9 @@ class PytestWorker:
             tests = json.loads(next(generate_messages(conn))) # Only one message
         finally:
             conn.close()
+            p.wait()
 
-        self.modules = self._parse_discover(tests["tests"]) 
+        self.modules = self._parse_discover(tests["tests"])
         
     @staticmethod
     def _parse_discover(tests):
@@ -85,7 +92,7 @@ class PytestWorker:
         
     def get_markers(self):
         # TODO: Handle errors in markers
-        p = self._run_pytest(self.test_dir, "--markers")
+        p, _ = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
             
     def run_tests(self):
@@ -93,10 +100,15 @@ class PytestWorker:
         for module, tests in self.modules.items():
             for test in tests:
                 if test["selected"]:
-                    pytest_arg.append(f"\"{module}::{test['name']}\"")
+                    pytest_arg.append(f"{module}::{test['name']}")
         
-        p = self._run_pytest(*pytest_arg)
-        self._cur_pid = p.pid
+        p, conn = self._run_pytest(*pytest_arg)
+        self._cur_tests = p
+        self.tests_running = True
+        self.test_stream_connection = conn
+        
+    def stop_tests(self):
+        self._cur_tests.kill()
 
     def _run_pytest(self, *args):
         print(['pytest', "-p", PLUGIN_PATH] + list(args))

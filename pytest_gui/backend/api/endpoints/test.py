@@ -24,6 +24,11 @@ def get():
 
 def run():
     worker.run_tests()
+    return
+    
+def stop():
+    worker.stop_tests()
+    return
             
     
     

@@ -135,3 +135,25 @@ paths:
       responses:
         200:
           description: "Successfully started running tests"
+
+  /stop:
+    get:
+      operationId: "test.stop"
+      tags:
+        - "Tests"
+      summary: "Stop tests"
+      description: "Stop the tests"
+      responses:
+        200:
+          description: "Successfully stopped running tests"
+
+  /stream:
+    get:
+      operationId: "stream.stream"
+      tags:
+        - "Tests"
+      summary: "Stream tests"
+      description: "Stream the tests"
+      responses:
+        200:
+          description: "Successfully stream running tests"
