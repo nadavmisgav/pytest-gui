@@ -147,13 +147,24 @@ paths:
         200:
           description: "Successfully stopped running tests"
 
-  /stream:
+  /status:
     get:
-      operationId: "stream.stream"
+      operationId: "streams.status"
       tags:
         - "Tests"
-      summary: "Stream tests"
-      description: "Stream the tests"
+      summary: "Stream tests results"
+      description: "Stream the tests results"
       responses:
         200:
-          description: "Successfully stream running tests"
+          description: "Successfully stream running tests results"
+
+  /logs:
+    get:
+      operationId: "streams.logs"
+      tags:
+        - "Tests"
+      summary: "Stream tests logs"
+      description: "Stream the tests logs"
+      responses:
+        200:
+          description: "Successfully stream running tests logs"

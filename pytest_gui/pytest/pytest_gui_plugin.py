@@ -6,6 +6,9 @@ import subprocess
 from multiprocessing.connection import Client
 from decouple import config
 from contextlib import contextmanager
+from datetime import datetime
+import os
+from os.path import join
 
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
@@ -68,7 +71,7 @@ class PytestGuiPlugin:
 
     def pytest_runtestloop(self, session):
         timestamp = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
-        self._report_folder = join(self.REPORT_DIR, timestamp)
+        self._report_folder = join(REPORT_DIR, timestamp)
         os.makedirs(self._report_folder, exist_ok=False)
         
     def pytest_runtest_logreport(self, report):

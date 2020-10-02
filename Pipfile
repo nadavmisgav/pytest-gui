@@ -7,6 +7,7 @@ verify_ssl = true
 python-decouple = "*"
 flask = "*"
 connexion = {extras = ["swagger-ui"],version = "*"}
+pytest-html = "*"
 
 [requires]
 python_version = "3.8"

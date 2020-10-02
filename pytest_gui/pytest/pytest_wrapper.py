@@ -4,8 +4,11 @@ import subprocess
 import json
 from dataclasses import dataclass
 from multiprocessing.connection import Listener
+from threading import Thread
 from collections import defaultdict
 from decouple import config
+from queue import Queue
+
 
 from pytest_gui.backend.config import DEBUG, TEST_DIR
 
@@ -41,18 +44,17 @@ def _filter_only_custom_markers(out):
             yield name, desc
 
         
-def generate_messages(conn):
-    while True:
-        try:
-            msg = conn.recv()
-        except EOFError:
-            break
-            
-        if msg == 'close':
-            conn.close()
-            break
-        yield msg
+
+
         
+class TestRunner(Thread):
+    def run(self, process, queue):
+        while process.poll() is None:
+            output = process.stdout.readline()
+            if output != b'':
+                queue.put(output.strip())
+        process.wait()
+
 
 class PytestWorker:
     def __init__(self, test_dir):
@@ -63,6 +65,7 @@ class PytestWorker:
         self.test_stream_connection = None
         self._cur_pid = None
         self._listener = Listener(ADDRESS)
+        self.log_queue = Queue()
     
     def __del__(self):
         self._listener.close()
@@ -73,7 +76,7 @@ class PytestWorker:
         # TODO: add logging
         print('connection accepted from', self._listener.last_accepted)
         try:
-            tests = json.loads(next(generate_messages(conn))) # Only one message
+            tests = json.loads(conn.recv()) # Only one message
         finally:
             conn.close()
             p.wait()
@@ -106,13 +109,14 @@ class PytestWorker:
         self._cur_tests = p
         self.tests_running = True
         self.test_stream_connection = conn
+        TestRunner().run(p, self.log_queue)
         
     def stop_tests(self):
         self._cur_tests.kill()
 
     def _run_pytest(self, *args):
         print(['pytest', "-p", PLUGIN_PATH] + list(args))
-        p = subprocess.Popen(['pytest', "-p", PLUGIN_PATH] + list(args), 
+        p = subprocess.Popen(['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args), 
                          stdout=subprocess.PIPE, 
                          universal_newlines=True)
         print("Waiting for plugin connect")
