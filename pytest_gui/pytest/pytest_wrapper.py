@@ -49,15 +49,19 @@ def _filter_only_custom_markers(out):
         
 class TestRunner(Thread):
     def run(self, worker):
-        while worker._cur_tests.poll() is None:
-            output = worker._cur_tests.stdout.readline()
-            if output != b'':
-                worker.log_queue.put(output.strip())
-        worker._cur_tests.wait()
-        
-        worker._cur_tests = None
-        worker.tests_running = False
-        worker.test_stream_connection = None
+        try:
+            while worker._cur_tests.poll() is None:
+                output = worker._cur_tests.stdout.readline()
+                if output != b'':
+                    worker.log_queue.put(output.strip())
+            worker._cur_tests.wait()
+            
+            worker._cur_tests = None
+            worker.tests_running = False
+            worker.test_stream_connection = None
+        except:
+            if worker._cur_tests != None: # Exception raised not via kill
+                raise
 
 
 class PytestWorker:
@@ -117,6 +121,9 @@ class PytestWorker:
         
     def stop_tests(self):
         self._cur_tests.kill()
+        self._cur_tests = None
+        self.tests_running = False
+        self.test_stream_connection = None
 
     def _run_pytest(self, *args):
         print(['pytest', "-p", PLUGIN_PATH] + list(args))
