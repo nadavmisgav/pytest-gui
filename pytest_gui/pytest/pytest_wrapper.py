@@ -48,12 +48,16 @@ def _filter_only_custom_markers(out):
 
         
 class TestRunner(Thread):
-    def run(self, process, queue):
-        while process.poll() is None:
-            output = process.stdout.readline()
+    def run(self, worker):
+        while worker._cur_tests.poll() is None:
+            output = worker._cur_tests.stdout.readline()
             if output != b'':
-                queue.put(output.strip())
-        process.wait()
+                worker.log_queue.put(output.strip())
+        worker._cur_tests.wait()
+        
+        worker._cur_tests = None
+        worker.tests_running = False
+        worker.test_stream_connection = None
 
 
 class PytestWorker:
@@ -63,7 +67,7 @@ class PytestWorker:
         self.markers = None
         self.tests_running = False
         self.test_stream_connection = None
-        self._cur_pid = None
+        self._cur_tests = None
         self._listener = Listener(ADDRESS)
         self.log_queue = Queue()
     
@@ -109,7 +113,7 @@ class PytestWorker:
         self._cur_tests = p
         self.tests_running = True
         self.test_stream_connection = conn
-        TestRunner().run(p, self.log_queue)
+        TestRunner().run(self)
         
     def stop_tests(self):
         self._cur_tests.kill()
