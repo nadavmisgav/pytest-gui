@@ -9,6 +9,8 @@ from contextlib import contextmanager
 
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
+REPORT_DIR= config("PYTEST_GUI_REPORT_DIR", default=".reports")
+
 ADDRESS = ('localhost', PLUGIN_PORT)
 
 
@@ -46,9 +48,10 @@ def extract_discovery_errors():
     return errors
 
 
-class PytestGuiPlugin:
+class PytestGuiPlugin:    
     def __init__(self):
         self._conn = Client(ADDRESS)
+        self._report_folder = ""
     
     def __del__(self):
         self._conn.send('close')
@@ -63,13 +66,32 @@ class PytestGuiPlugin:
         if report.failed:
             collected_errors.append(report)
 
+    def pytest_runtestloop(self, session):
+        timestamp = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
+        self._report_folder = join(self.REPORT_DIR, timestamp)
+        os.makedirs(self._report_folder, exist_ok=False)
+        
     def pytest_runtest_logreport(self, report):
+        # Send result
         self._conn.send(json.dumps({
             'when': report.when,
             'outcome': report.outcome,
             "nodeid": report.nodeid,
             "duration": report.duration
             }))
+    
+        # Log output
+        folder, test = report.nodeid.split("/")
+        module, id_ = test.split("::")
+        
+        log_folder = join(self._report_folder, folder, module) 
+        os.makedirs(log_folder, exist_ok=True)
+        
+        log_file = join(log_folder, f"{id_}.log")
+        with open(log_file, "a") as fp:
+            fp.write(f"{report.when}\n")
+            for section in report.sections:
+                fp.writelines(section)
 
 
 def pytest_configure(config):
