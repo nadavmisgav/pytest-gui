@@ -1,12 +1,13 @@
 from pytest_gui.pytest.pytest_wrapper import worker
 
+
 def select(test):
     module = test.get("module", None)
     name = test.get("name", None)
     selected = test["selected"]
     found_idx = 0
-    
-    if module == None: # All modules
+
+    if module == None:  # All modules
         for m in worker.modules:
             for idx, test in enumerate(worker.modules[m]):
                 worker.modules[module][idx]["selected"] = selected
@@ -16,19 +17,19 @@ def select(test):
             if test["name"] == name or name == None:
                 worker.modules[module][idx]["selected"] = selected
                 found_idx = idx
-                
+
     return worker.modules
+
 
 def get():
     return worker.modules
 
+
 def run():
     worker.run_tests()
     return
-    
+
+
 def stop():
     worker.stop_tests()
     return
-            
-    
-    

@@ -1,0 +1,11 @@
+repos:
+  - repo: https://gitlab.com/pycqa/flake8
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    hooks:
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: end-of-file-fixer
+      - id: check-yaml

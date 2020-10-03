@@ -32,6 +32,8 @@ _builtin_markers = [
     "tryfirst",
     "trylast",
 ]
+
+
 def _filter_only_custom_markers(out):
     """Generator for parse output and return custom markers
     Args:
@@ -47,7 +49,7 @@ def _filter_only_custom_markers(out):
                 continue
             yield name, desc
 
-        
+
 class TestRunner(Thread):
     def run(self, worker):
         try:
@@ -56,12 +58,12 @@ class TestRunner(Thread):
                 if output != b'':
                     worker.log_queue.put(output.strip())
             worker._cur_tests.wait()
-            
+
             worker._cur_tests = None
             worker.tests_running = False
             worker.test_stream_connection = None
         except:
-            if worker._cur_tests != None: # Exception raised not via kill
+            if worker._cur_tests != None:  # Exception raised not via kill
                 raise
 
 
@@ -75,21 +77,21 @@ class PytestWorker:
         self._cur_tests = None
         self._listener = Listener(ADDRESS)
         self.log_queue = Queue()
-    
+
     def __del__(self):
         self._listener.close()
-    
+
     def discover(self):
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
         try:
-            tests = json.loads(conn.recv()) # Only one message
+            tests = json.loads(conn.recv())  # Only one message
         finally:
             conn.close()
             p.wait()
 
         self.modules = self._parse_discover(tests["tests"])
-        
+
     @staticmethod
     def _parse_discover(tests):
         modules = defaultdict(list)
@@ -99,7 +101,7 @@ class PytestWorker:
             module, name = id_.split("::")
             modules[module].append({"name": name, "line": line, "selected": True})
         return modules
-        
+
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
@@ -110,13 +112,13 @@ class PytestWorker:
             for test in tests:
                 if test["selected"]:
                     pytest_arg.append(f"{module}::{test['name']}")
-        
+
         p, conn = self._run_pytest(*pytest_arg)
         self._cur_tests = p
         self.tests_running = True
         self.test_stream_connection = conn
         TestRunner().run(self)
-        
+
     def stop_tests(self):
         self._cur_tests.kill()
         self._cur_tests = None
@@ -130,5 +132,6 @@ class PytestWorker:
         logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
         return p, conn
+
 
 worker = PytestWorker(TEST_DIR)
