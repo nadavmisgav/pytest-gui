@@ -25,19 +25,8 @@ paths:
           schema:
             type: "array"
             items:
-              properties:
-                name:
-                  type: "string"
-                tests:
-                  type: "array"
-                  items:
-                    properties:
-                      name:
-                        type: "string"
-                      line:
-                        type: "integer"
-                      selected:
-                        type: "boolean"
+              - $ref: "#/components/schema/Test"
+
   /markers:
     get:
       operationId: "markers.get"
@@ -51,11 +40,8 @@ paths:
           schema:
             type: "array"
             items:
-              properties:
-                name:
-                  type: "string"
-                description:
-                  type: "string"
+              - $ref: "#/components/schema/Marker"
+
   /test:
     get:
       operationId: "test.get"
@@ -69,21 +55,10 @@ paths:
           schema:
             type: "array"
             items:
-              properties:
-                name:
-                  type: "string"
-                tests:
-                  type: "array"
-                  items:
-                    properties:
-                      name:
-                        type: "string"
-                      line:
-                        type: "integer"
-                      selected:
-                        type: "boolean"
+              - $ref: "#/components/schema/Test"
+
   /select:
-    post:
+    put:
       operationId: "test.select"
       tags:
         - "Tests"
@@ -93,7 +68,7 @@ paths:
       parameters:
         - in: body
           name: test
-          description: The test to select.
+          description: The tests to update.
           schema:
             type: object
             required:
@@ -111,19 +86,7 @@ paths:
           schema:
             type: "array"
             items:
-              properties:
-                name:
-                  type: "string"
-                tests:
-                  type: "array"
-                  items:
-                    properties:
-                      name:
-                        type: "string"
-                      line:
-                        type: "integer"
-                      selected:
-                        type: "boolean"
+              - $ref: "#/components/schema/Test"
 
   /run:
     get:
@@ -168,3 +131,27 @@ paths:
       responses:
         200:
           description: "Successfully stream running tests logs"
+
+components:
+  schemas:
+    Test:
+      properties:
+        nodeid:
+          type: "string"
+        module:
+          type: "string"
+        file:
+          type: "string"
+        id:
+          type: "string"
+        markers:
+          type: "array"
+          items:
+            - $ref: "#/components/schema/Marker"
+        selected:
+          type: "boolean"
+
+  Marker:
+    properties:
+      name:
+        type: "string"

@@ -1,7 +1,6 @@
 import json
 import logging
 import subprocess
-from collections import defaultdict
 from multiprocessing.connection import Listener
 from queue import Queue
 from threading import Thread
@@ -67,7 +66,7 @@ class TestRunner(Thread):
 class PytestWorker:
     def __init__(self, test_dir):
         self.test_dir = test_dir
-        self.modules = None
+        self.tests = None
         self.markers = None
         self.tests_running = False
         self.test_stream_connection = None
@@ -82,34 +81,17 @@ class PytestWorker:
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
         try:
-            tests = json.loads(conn.recv())  # Only one message
+            self.tests = json.loads(conn.recv())  # Only one message
         finally:
             conn.close()
             p.wait()
-
-        self.modules = self._parse_discover(tests["tests"])
-
-    @staticmethod
-    def _parse_discover(tests):
-        modules = defaultdict(list)
-        for test in tests:
-            id_ = test["id"]
-            line = test["line"]
-            module, name = id_.split("::")
-            modules[module].append({"name": name, "line": line, "selected": True})
-        return modules
 
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
 
     def run_tests(self):
-        pytest_arg = []
-        for module, tests in self.modules.items():
-            for test in tests:
-                if test["selected"]:
-                    pytest_arg.append(f"{module}::{test['name']}")
-
+        pytest_arg = [test["nodeid"] for test in self.tests if test["selected"]]
         p, conn = self._run_pytest(*pytest_arg)
         self._cur_tests = p
         self.tests_running = True
