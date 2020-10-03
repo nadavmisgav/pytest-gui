@@ -1,11 +1,6 @@
-import py
-import sys
-import pytest
 import json
-import subprocess
 from multiprocessing.connection import Client
 from decouple import config
-from contextlib import contextmanager
 from datetime import datetime
 import os
 from os.path import join
@@ -29,7 +24,7 @@ def get_line_number(item):
         try:
             from _pytest.compat import getfslineno
             return getfslineno(obj)[1]
-        except:
+        except Exception:
             pass
     return None
 
@@ -49,7 +44,7 @@ def extract_discovery_errors():
         try:
             errors.append({'file': error.location[0] if error.location else None,
                            'message': error.longreprtext})
-        except:
+        except Exception:
             pass
     return errors
 

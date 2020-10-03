@@ -3,7 +3,7 @@ repos:
     rev: "master"
     hooks:
       - id: flake8
-        args: ["--config=config.pep8"]
+        args: ["--config=setup.cfg"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "master"

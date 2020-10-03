@@ -1,10 +1,7 @@
-import os
-import sys
 import json
 import logging
 import subprocess
 
-from dataclasses import dataclass
 from multiprocessing.connection import Listener
 from threading import Thread
 from collections import defaultdict
@@ -62,8 +59,8 @@ class TestRunner(Thread):
             worker._cur_tests = None
             worker.tests_running = False
             worker.test_stream_connection = None
-        except:
-            if worker._cur_tests != None:  # Exception raised not via kill
+        except Exception:
+            if worker._cur_tests is not None:  # Exception raised not via kill
                 raise
 
 
@@ -105,7 +102,7 @@ class PytestWorker:
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
-            
+
     def run_tests(self):
         pytest_arg = []
         for module, tests in self.modules.items():
@@ -127,7 +124,7 @@ class PytestWorker:
 
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
-        logger.info(f"Runing command: {' '.join(command)}")        
+        logger.info(f"Runing command: {' '.join(command)}")
         p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
         logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
