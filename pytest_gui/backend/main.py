@@ -1,8 +1,11 @@
 import sys
 import os
 import connexion
+from decouple import config
 
-from .config import DEBUG, SERVER_PORT
+
+DEBUG = config("PYTEST_GUI_DEBUG", cast=bool, default=False)
+SERVER_PORT = config("PYTEST_GUI_PORT", cast=int, default=5000)
 
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'api/endpoints')))

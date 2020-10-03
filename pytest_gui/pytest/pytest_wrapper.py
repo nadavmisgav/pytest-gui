@@ -10,8 +10,7 @@ from decouple import config
 from queue import Queue
 
 
-from pytest_gui.backend.config import DEBUG, TEST_DIR
-
+TEST_DIR = config("PYTEST_GUI_TEST_DIR", default=".")
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
 PLUGIN_PATH = "pytest_gui.pytest.pytest_gui_plugin"
 ADDRESS = ('localhost', PLUGIN_PORT)
