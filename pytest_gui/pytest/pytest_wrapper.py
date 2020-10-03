@@ -88,10 +88,9 @@ class PytestWorker:
                 sleep(1)
                 try:
                     self.tests = json.loads(conn.recv())  # Only one message
+                    break
                 except BlockingIOError:
                     continue
-                else:
-                    break
         finally:
             conn.close()
             p.wait()
