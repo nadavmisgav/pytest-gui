@@ -80,7 +80,6 @@ class PytestWorker:
         self._listener.close()
     
     def discover(self):
-        # TODO: Handle errors in collect
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
         try:
@@ -102,7 +101,6 @@ class PytestWorker:
         return modules
         
     def get_markers(self):
-        # TODO: Handle errors in markers
         p, _ = self._run_pytest(self.test_dir, "--markers")
         self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
             
