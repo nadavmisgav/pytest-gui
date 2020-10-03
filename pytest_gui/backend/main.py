@@ -33,7 +33,7 @@ def react_app():
 def cmd(argv=sys.argv):
     logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [DEBUG={DEBUG}]")
     http_server.serve_forever()
-    
-    
+
+
 if __name__ == '__main__':
-    cmd()
+    cmd(sys.argv)

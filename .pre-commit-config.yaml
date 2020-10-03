@@ -1,9 +1,12 @@
 repos:
   - repo: https://gitlab.com/pycqa/flake8
+    rev: "master"
     hooks:
       - id: flake8
+        args: ["--config=config.pep8"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "master"
     hooks:
       - id: trailing-whitespace
       - id: mixed-line-ending
