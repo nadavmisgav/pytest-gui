@@ -1,13 +1,18 @@
 import os
 import sys
-import subprocess
 import json
+import logging
+import subprocess
+
 from dataclasses import dataclass
 from multiprocessing.connection import Listener
 from threading import Thread
 from collections import defaultdict
 from decouple import config
 from queue import Queue
+
+
+logger = logging.getLogger('main')
 
 
 TEST_DIR = config("PYTEST_GUI_TEST_DIR", default=".")
@@ -41,9 +46,6 @@ def _filter_only_custom_markers(out):
             if any(name.startswith(marker) for marker in _builtin_markers):
                 continue
             yield name, desc
-
-        
-
 
         
 class TestRunner(Thread):
@@ -80,8 +82,7 @@ class PytestWorker:
     def discover(self):
         # TODO: Handle errors in collect
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
-        # TODO: add logging
-        print('connection accepted from', self._listener.last_accepted)
+        logger.debug(f'Connection accepted from {self._listener.last_accepted}')
         try:
             tests = json.loads(conn.recv()) # Only one message
         finally:
@@ -125,17 +126,11 @@ class PytestWorker:
         self.test_stream_connection = None
 
     def _run_pytest(self, *args):
-        print(['pytest', "-p", PLUGIN_PATH] + list(args))
-        p = subprocess.Popen(['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args), 
-                         stdout=subprocess.PIPE, 
-                         universal_newlines=True)
-        print("Waiting for plugin connect")
+        command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
+        logger.info(f"Runing command: {' '.join(command)}")        
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
+        logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
         return p, conn
 
 worker = PytestWorker(TEST_DIR)
-
-if __name__ == "__main__":
-    a = PytestWorker("/home/nadav/projects/calc_test/tests")
-    a.get_markers()
-    print(a.markers)

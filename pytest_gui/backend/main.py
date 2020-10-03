@@ -14,7 +14,6 @@ HOST = "localhost"
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'api/endpoints')))
 app = connexion.FlaskApp(__name__, specification_dir='./api/')
-app.add_api('swagger.yaml')
 
 # Set logger
 logger = app.app.logger
@@ -22,6 +21,7 @@ logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
 logger.handlers[0].setFormatter(logging.Formatter('[%(asctime)s]::%(levelname)s::%(message)s'))
 
 
+app.add_api('swagger.yaml')
 http_server = WSGIServer((HOST, SERVER_PORT), app)
 
 
@@ -35,6 +35,5 @@ def cmd(argv=sys.argv):
     http_server.serve_forever()
     
     
-
 if __name__ == '__main__':
     cmd()
