@@ -1,12 +1,12 @@
 import json
 import logging
 import subprocess
-
-from multiprocessing.connection import Listener
-from threading import Thread
 from collections import defaultdict
-from decouple import config
+from multiprocessing.connection import Listener
 from queue import Queue
+from threading import Thread
+
+from decouple import config
 
 
 logger = logging.getLogger('main')

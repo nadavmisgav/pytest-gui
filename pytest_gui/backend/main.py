@@ -1,10 +1,12 @@
+import logging
 import os
 import sys
+
 import connexion
-import logging
+
+from decouple import config
 
 from gevent.pywsgi import WSGIServer
-from decouple import config
 
 
 DEBUG = config("PYTEST_GUI_DEBUG", cast=bool, default=False)

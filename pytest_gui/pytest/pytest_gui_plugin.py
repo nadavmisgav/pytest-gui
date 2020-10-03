@@ -1,9 +1,10 @@
 import json
-from multiprocessing.connection import Client
-from decouple import config
-from datetime import datetime
 import os
+from datetime import datetime
+from multiprocessing.connection import Client
 from os.path import join
+
+from decouple import config
 
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)

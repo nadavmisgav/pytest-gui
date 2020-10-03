@@ -1,6 +1,7 @@
-from flask import Response
 from queue import Empty
-# from pytest_gui.backend.main import app
+
+from flask import Response
+
 from pytest_gui.pytest.pytest_wrapper import worker
 
 
