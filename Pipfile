@@ -8,6 +8,7 @@ python-decouple = "*"
 flask = "*"
 connexion = {extras = ["swagger-ui"],version = "*"}
 pytest-html = "*"
+gevent = "*"
 
 [requires]
 python_version = "3.8"
