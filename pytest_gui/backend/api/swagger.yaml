@@ -1,31 +1,30 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
-  description: Swagger file that describes pytest-gui api
+  description: "OpenAPI file that describes pytest-gui api"
   version: "1.0.0"
-  title: Swagger REST Article
-consumes:
-  - "application/json"
-produces:
-  - "application/json"
+  title: "OpenAPI REST Article"
 
-basePath: "/api"
+servers:
+  - url: "/api"
+    description: "API server"
 
-# Paths supported by the server application
 paths:
   /discover:
     get:
       operationId: "discover.get"
       tags:
-        - "Discover"
+        - "Actions"
       summary: "The tests data structure supported by the server application"
       description: "Get the list of tests"
       responses:
         200:
           description: "Successfully got test list operation"
-          schema:
-            type: "array"
-            items:
-              - $ref: "#/components/schema/Test"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Test"
 
   /markers:
     get:
@@ -37,10 +36,12 @@ paths:
       responses:
         200:
           description: "Successfully got marker list operation"
-          schema:
-            type: "array"
-            items:
-              - $ref: "#/components/schema/Marker"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Marker"
 
   /test:
     get:
@@ -52,47 +53,51 @@ paths:
       responses:
         200:
           description: "Successfully got test list operation"
-          schema:
-            type: "array"
-            items:
-              - $ref: "#/components/schema/Test"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Test"
 
   /select:
     put:
       operationId: "test.select"
       tags:
         - "Tests"
-      summary: Selects a test.
-      consumes:
-        - application/json
-      parameters:
-        - in: body
-          name: test
-          description: The tests to update.
-          schema:
-            type: object
-            required:
-              - selected
-            properties:
-              name:
-                type: string
-              module:
-                type: string
-              selected:
-                type: boolean
+      summary: "Selects a test"
+      description: "Select tests to run"
+      requestBody:
+        description: "The tests to update."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "selected"
+              properties:
+                name:
+                  type: string
+                module:
+                  type: string
+                selected:
+                  type: boolean
       responses:
         201:
-          description: Selected
-          schema:
-            type: "array"
-            items:
-              - $ref: "#/components/schema/Test"
+          description: "Selected"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Test"
 
   /run:
     get:
       operationId: "test.run"
       tags:
-        - "Tests"
+        - "Actions"
       summary: "Run tests"
       description: "Run the tests"
       responses:
@@ -103,7 +108,7 @@ paths:
     get:
       operationId: "test.stop"
       tags:
-        - "Tests"
+        - "Actions"
       summary: "Stop tests"
       description: "Stop the tests"
       responses:
@@ -114,44 +119,68 @@ paths:
     get:
       operationId: "streams.status"
       tags:
-        - "Tests"
-      summary: "Stream tests results"
-      description: "Stream the tests results"
+        - "Streams"
+      summary: "Stream test results"
+      description: "Stream the test results"
       responses:
         200:
-          description: "Successfully stream running tests results"
+          description: "Successfully stream running test results"
+          content:
+            text/event-stream:
+              schema:
+                type: string
 
   /logs:
     get:
       operationId: "streams.logs"
       tags:
-        - "Tests"
-      summary: "Stream tests logs"
-      description: "Stream the tests logs"
+        - "Streams"
+      summary: "Stream test logs"
+      description: "Stream the test logs"
       responses:
         200:
-          description: "Successfully stream running tests logs"
+          description: "Successfully stream running test logs"
+          content:
+            text/event-stream:
+              schema:
+                type: string
 
 components:
   schemas:
     Test:
+      type: object
       properties:
         nodeid:
-          type: "string"
+          type: string
         module:
-          type: "string"
+          type: string
         file:
-          type: "string"
+          type: string
         id:
-          type: "string"
+          type: string
         markers:
-          type: "array"
+          type: array
           items:
-            - $ref: "#/components/schema/Marker"
+            $ref: "#/components/schemas/Marker"
         selected:
-          type: "boolean"
+          type: boolean
 
-  Marker:
-    properties:
-      name:
-        type: "string"
+    Marker:
+      type: object
+      properties:
+        name:
+          type: string
+
+    TestStatus:
+      type: object
+      properties:
+        nodeid:
+          type: string
+        outcome:
+          type: string
+          enum: ["passed", "failed", "skipped"]
+        when:
+          type: string
+          enum: ["setup", "call", "teardown"]
+        duration:
+          type: string

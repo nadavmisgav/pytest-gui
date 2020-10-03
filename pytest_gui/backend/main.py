@@ -1,3 +1,10 @@
+# flake8: noqa
+# autopep8: off
+
+# This is required by the gevent server to patch code
+from gevent import monkey
+monkey.patch_all()
+
 import logging
 import os
 import sys
@@ -34,7 +41,11 @@ def react_app():
 
 def cmd(argv=sys.argv):
     logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [DEBUG={DEBUG}]")
-    http_server.serve_forever()
+    try:
+        http_server.serve_forever()
+    except KeyboardInterrupt:
+        logger.info(f"Stoping Pytest-GUI app")
+        http_server.stop()
 
 
 if __name__ == '__main__':

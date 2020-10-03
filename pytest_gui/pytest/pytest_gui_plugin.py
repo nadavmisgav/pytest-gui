@@ -55,7 +55,7 @@ class PytestGuiPlugin:
             'when': report.when,
             'outcome': report.outcome,
             "nodeid": report.nodeid,
-            "duration": report.duration
+            "duration": str(report.duration)
         }))
 
         # Log output

@@ -2,6 +2,7 @@ from pytest_gui.pytest.pytest_wrapper import worker
 
 
 def select(test):
+    # TODO: fix modules use case
     module = test.get("module", None)
     name = test.get("name", None)
     selected = test["selected"]
@@ -22,7 +23,7 @@ def select(test):
 
 
 def get():
-    return worker.modules
+    return worker.tests
 
 
 def run():

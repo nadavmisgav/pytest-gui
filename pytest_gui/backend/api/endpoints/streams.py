@@ -2,6 +2,8 @@ from queue import Empty
 
 from flask import Response
 
+from gevent import sleep
+
 from pytest_gui.pytest.pytest_wrapper import worker
 
 
@@ -9,12 +11,12 @@ def generate_status(conn):
     while True:
         try:
             msg = conn.recv()
+        except BlockingIOError:  # recv is not blocking
+            sleep(1)  # balance number of receives
+            continue
         except EOFError:
             break
 
-        if msg == 'close':
-            conn.close()
-            break
         yield msg
 
 

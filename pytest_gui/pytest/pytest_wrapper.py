@@ -7,8 +7,10 @@ from threading import Thread
 
 from decouple import config
 
+from gevent import sleep
 
-logger = logging.getLogger('main')
+
+logger = logging.getLogger('pytest_gui.backend.main')
 
 
 TEST_DIR = config("PYTEST_GUI_TEST_DIR", default=".")
@@ -46,7 +48,7 @@ def _filter_only_custom_markers(out):
             yield name, desc
 
 
-class TestRunner(Thread):
+class _TestRunner(Thread):
     def run(self, worker):
         try:
             while worker._cur_tests.poll() is None:
@@ -80,8 +82,16 @@ class PytestWorker:
     def discover(self):
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
+        # TODO: handle if failed 5 times
         try:
-            self.tests = json.loads(conn.recv())  # Only one message
+            for _ in range(5):  # We can't be blocking so try multiple times
+                sleep(1)
+                try:
+                    self.tests = json.loads(conn.recv())  # Only one message
+                except BlockingIOError:
+                    continue
+                else:
+                    break
         finally:
             conn.close()
             p.wait()
@@ -96,13 +106,15 @@ class PytestWorker:
         self._cur_tests = p
         self.tests_running = True
         self.test_stream_connection = conn
-        TestRunner().run(self)
+        _TestRunner().run(self)
 
     def stop_tests(self):
-        self._cur_tests.kill()
-        self._cur_tests = None
-        self.tests_running = False
-        self.test_stream_connection = None
+        # TODO: Race condition?
+        if self._cur_tests is not None:
+            self._cur_tests.kill()
+            self._cur_tests = None
+            self.tests_running = False
+            self.test_stream_connection = None
 
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
