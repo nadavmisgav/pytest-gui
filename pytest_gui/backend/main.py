@@ -10,7 +10,7 @@ from decouple import config
 from waitress import serve
 
 
-DEBUG = config("PYTEST_GUI_DEBUG", cast=bool, default=False)
+LOG_LEVEL = config("PYTEST_GUI_LOG_LEVEL", default="INFO")
 SERVER_PORT = config("PYTEST_GUI_PORT", cast=int, default=5000)
 HOST = "localhost"
 
@@ -20,7 +20,7 @@ app = connexion.FlaskApp(__name__, specification_dir='./api/')
 
 # Set logger
 logger = app.app.logger
-logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
+logger.setLevel(LOG_LEVEL)
 logger.handlers[0].setFormatter(logging.Formatter('[%(asctime)s]::%(levelname)s::%(message)s'))
 logger.propagate = False
 
@@ -34,7 +34,7 @@ def react_app():
 
 
 def cmd(argv=sys.argv):
-    logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [DEBUG={DEBUG}]")
+    logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [LOG_LEVEL={logging.getLevelName(logger.level)}]")
     serve(app, host=HOST, port=SERVER_PORT)
 
 
