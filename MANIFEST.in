@@ -1,5 +1,2 @@
-include pytest_gui/backend/api/swagger.yaml
+recursive-include pytest_gui/backend/api/ *.yaml
 recursive-include frontend/build *
-
-
-

@@ -1,0 +1,71 @@
+test:
+  get:
+    operationId: "test.test.get"
+    tags:
+      - "Tests"
+    summary: "Get all tests"
+    description: "Get the list of tests"
+    responses:
+      200:
+        description: "Successfully got test list operation"
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../../openapi.yaml#/components/schemas/Test"
+
+select:
+  put:
+    operationId: "test.test.select"
+    tags:
+      - "Tests"
+    summary: "Selects a test"
+    description: "Select tests to run"
+    requestBody:
+      description: "The tests to update."
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - "selected"
+            properties:
+              name:
+                type: string
+              module:
+                type: string
+              selected:
+                type: boolean
+    responses:
+      201:
+        description: "Selected"
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../../openapi.yaml#/components/schemas/Test"
+
+run:
+  get:
+    operationId: "test.test.run"
+    tags:
+      - "Actions"
+    summary: "Run tests"
+    description: "Run the tests"
+    responses:
+      200:
+        description: "Successfully started running tests"
+
+stop:
+  get:
+    operationId: "test.test.stop"
+    tags:
+      - "Actions"
+    summary: "Stop tests"
+    description: "Stop the tests"
+    responses:
+      200:
+        description: "Successfully stopped running tests"

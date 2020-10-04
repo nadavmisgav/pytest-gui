@@ -1,0 +1,16 @@
+markers:
+  get:
+    operationId: "markers.markers.get"
+    tags:
+      - "Markers"
+    summary: "The test markers registered"
+    description: "Get the list of markers"
+    responses:
+      200:
+        description: "Successfully got marker list operation"
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../../openapi.yaml#/components/schemas/Marker"

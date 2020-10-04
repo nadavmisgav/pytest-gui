@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  description: "OpenAPI file that describes pytest-gui api"
+  version: "1.0.0"
+  title: "OpenAPI REST Article"
+
+servers:
+  - url: "/api"
+    description: "API server"
+
+paths:
+  /discover:
+    $ref: "./endpoints/discover/discover.yaml#/discover"
+  /markers:
+    $ref: "./endpoints/markers/markers.yaml#/markers"
+  /test:
+    $ref: "./endpoints/test/test.yaml#/test"
+  /select:
+    $ref: "./endpoints/test/test.yaml#/select"
+  /run:
+    $ref: "./endpoints/test/test.yaml#/run"
+  /stop:
+    $ref: "./endpoints/test/test.yaml#/stop"
+  /status:
+    $ref: "./endpoints/streams/streams.yaml#/status"
+  /logs:
+    $ref: "./endpoints/streams/streams.yaml#/logs"
+
+components:
+  schemas:
+    Test:
+      type: object
+      properties:
+        nodeid:
+          type: string
+        module:
+          type: string
+        file:
+          type: string
+        id:
+          type: string
+        markers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Marker"
+        selected:
+          type: boolean
+
+    Marker:
+      type: object
+      properties:
+        name:
+          type: string
+
+    TestStatus:
+      type: object
+      properties:
+        nodeid:
+          type: string
+        outcome:
+          type: string
+          enum: ["passed", "failed", "skipped"]
+        when:
+          type: string
+          enum: ["setup", "call", "teardown"]
+        duration:
+          type: string

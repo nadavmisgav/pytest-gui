@@ -1,0 +1,29 @@
+status:
+  get:
+    operationId: "streams.streams.status"
+    tags:
+      - "Streams"
+    summary: "Stream test results"
+    description: "Stream the test results"
+    responses:
+      200:
+        description: "Successfully stream running test results"
+        content:
+          text/event-stream:
+            schema:
+              type: string
+
+logs:
+  get:
+    operationId: "streams.streams.logs"
+    tags:
+      - "Streams"
+    summary: "Stream test logs"
+    description: "Stream the test logs"
+    responses:
+      200:
+        description: "Successfully stream running test logs"
+        content:
+          text/event-stream:
+            schema:
+              type: string
