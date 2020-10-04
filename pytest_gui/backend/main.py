@@ -1,14 +1,11 @@
 import logging
 import os
 import sys
-from pathlib import Path
 
 
 import connexion
 
 from decouple import config
-
-from prance import ResolvingParser
 
 from waitress import serve
 
@@ -28,17 +25,10 @@ logger.handlers[0].setFormatter(logging.Formatter('[%(asctime)s]::%(levelname)s:
 logger.propagate = False
 
 
-def get_bundled_specs(main_file):
-    parser = ResolvingParser(str(main_file.absolute()),
-                             lazy=True, backend='openapi-spec-validator')
-    parser.parse()
-    return parser.specification
+app.add_api("openapi.all.yaml")
 
 
-app.add_api(get_bundled_specs(Path("openapi.yaml")))
-
-
-@app.route('/')
+@ app.route('/')
 def react_app():
     return "Hello world"
 

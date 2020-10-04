@@ -1,2 +1,2 @@
-recursive-include pytest_gui/backend/api/ *.yaml
+include pytest_gui/backend/api/openapi.all.yaml
 recursive-include frontend/build *
