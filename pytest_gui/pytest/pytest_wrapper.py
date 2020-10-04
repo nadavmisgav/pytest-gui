@@ -83,7 +83,6 @@ class _StatusUpdate(Thread):
 
     def run(self):
         for msg in self._generate_status(self.worker.test_stream_connection):
-            logger.debug(msg)
             self.worker.status_queue.put(msg)
 
 
