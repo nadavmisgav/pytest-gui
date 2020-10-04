@@ -41,7 +41,6 @@ setup(
     name="pytest_gui",
     version="0.0.1",
     author="ned3144",
-    author_email="nadav.misgav@gmail.com",
     description="A GUI for pytest",
     long_description=long_description,
     long_description_content_type="text/markdown",
