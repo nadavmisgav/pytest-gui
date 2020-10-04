@@ -14,3 +14,9 @@ markers:
               type: array
               items:
                 $ref: "../../openapi.yaml#/components/schemas/Marker"
+      "500":
+        description: "Failed to get markers"
+        content:
+          text/json:
+            schema:
+              type: string

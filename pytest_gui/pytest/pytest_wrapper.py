@@ -112,7 +112,14 @@ class PytestWorker:
 
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
-        self.markers = [{"name": name, "description": desc} for name, desc in _filter_only_custom_markers(p.stdout)]
+        p.wait()
+        if p.returncode != 0:
+            logger.error(f"Failed to get markers:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
+            return None
+
+        self.markers = [{"name": name} for name, desc in _filter_only_custom_markers(p.stdout)]
+        logger.info(f"Got {len(self.markers)} custom markers")
+        return self.markers
 
     def run_tests(self):
         pytest_arg = [test["nodeid"] for test in self.tests if test["selected"]]
