@@ -18,11 +18,11 @@ def status():
     if worker.tests_running:
         return Response(generate_from_queue(worker, worker.status_queue), mimetype="text/event-stream")
     else:
-        return Response(status=503, response="Not tests are currently running")
+        return Response(status=400, response="Not tests are currently running")
 
 
 def logs():
     if worker.tests_running:
         return Response(generate_from_queue(worker, worker.log_queue), mimetype="text/event-stream")
     else:
-        return Response(status=503, response="Not tests are currently running")
+        return Response(status=400, response="Not tests are currently running")

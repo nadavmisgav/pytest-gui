@@ -7,9 +7,15 @@ status:
     description: "Stream the test results"
     responses:
       "200":
-        description: "Successfully stream running test results"
+        description: "Successfully streaming the test results"
         content:
           text/event-stream:
+            schema:
+              type: string
+      "400":
+        description: "No tests a currently running"
+        content:
+          text/json:
             schema:
               type: string
 
@@ -22,8 +28,14 @@ logs:
     description: "Stream the test logs"
     responses:
       "200":
-        description: "Successfully stream running test logs"
+        description: "Successfully streaming the test logs"
         content:
           text/event-stream:
+            schema:
+              type: string
+      "400":
+        description: "No tests a currently running"
+        content:
+          text/json:
             schema:
               type: string
