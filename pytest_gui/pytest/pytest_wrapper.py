@@ -7,8 +7,6 @@ from threading import Thread
 
 from decouple import config
 
-from gevent import sleep
-
 
 logger = logging.getLogger('pytest_gui.backend.main')
 
@@ -49,20 +47,44 @@ def _filter_only_custom_markers(out):
 
 
 class _TestRunner(Thread):
-    def run(self, worker):
-        try:
-            while worker._cur_tests.poll() is None:
-                output = worker._cur_tests.stdout.readline()
-                if output != b'':
-                    worker.log_queue.put(output.strip())
-            worker._cur_tests.wait()
+    def __init__(self, worker, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.worker = worker
 
-            worker._cur_tests = None
-            worker.tests_running = False
-            worker.test_stream_connection = None
+    def run(self):
+        try:
+            while self.worker._cur_tests.poll() is None:
+                output = self.worker._cur_tests.stdout.readline()
+                if output != b'':
+                    self.worker.log_queue.put(output.strip())
+            self.worker._cur_tests.wait()
+
+            self.worker._cur_tests = None
+            self.worker.tests_running = False
+            self.worker.test_stream_connection = None
         except Exception:
-            if worker._cur_tests is not None:  # Exception raised not via kill
+            if self.worker._cur_tests is not None:  # Exception raised not via kill
                 raise
+
+
+class _StatusUpdate(Thread):
+    def __init__(self, worker, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.worker = worker
+
+    @staticmethod
+    def _generate_status(conn):
+        while True:
+            try:
+                msg = conn.recv()
+            except (EOFError, AttributeError):
+                break
+            yield msg
+
+    def run(self):
+        for msg in self._generate_status(self.worker.test_stream_connection):
+            logger.debug(msg)
+            self.worker.status_queue.put(msg)
 
 
 class PytestWorker:
@@ -75,6 +97,7 @@ class PytestWorker:
         self._cur_tests = None
         self._listener = Listener(ADDRESS)
         self.log_queue = Queue()
+        self.status_queue = Queue()
 
     def __del__(self):
         self._listener.close()
@@ -82,15 +105,8 @@ class PytestWorker:
     def discover(self):
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
-        # TODO: handle if failed 5 times
         try:
-            for _ in range(5):  # We can't be blocking so try multiple times
-                sleep(1)
-                try:
-                    self.tests = json.loads(conn.recv())  # Only one message
-                    break
-                except BlockingIOError:
-                    continue
+            self.tests = json.loads(conn.recv())  # Only one message
         finally:
             conn.close()
             p.wait()
@@ -105,7 +121,8 @@ class PytestWorker:
         self._cur_tests = p
         self.tests_running = True
         self.test_stream_connection = conn
-        _TestRunner().run(self)
+        _TestRunner(self).start()
+        _StatusUpdate(self).start()
 
     def stop_tests(self):
         # TODO: Race condition?

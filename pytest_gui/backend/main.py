@@ -1,10 +1,3 @@
-# flake8: noqa
-# autopep8: off
-
-# This is required by the gevent server to patch code
-from gevent import monkey
-monkey.patch_all()
-
 import logging
 import os
 import sys
@@ -13,7 +6,7 @@ import connexion
 
 from decouple import config
 
-from gevent.pywsgi import WSGIServer
+from waitress import serve
 
 
 DEBUG = config("PYTEST_GUI_DEBUG", cast=bool, default=False)
@@ -31,7 +24,6 @@ logger.handlers[0].setFormatter(logging.Formatter('[%(asctime)s]::%(levelname)s:
 
 
 app.add_api('swagger.yaml')
-http_server = WSGIServer((HOST, SERVER_PORT), app)
 
 
 @app.route('/')
@@ -42,10 +34,9 @@ def react_app():
 def cmd(argv=sys.argv):
     logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [DEBUG={DEBUG}]")
     try:
-        http_server.serve_forever()
+        serve(app, host=HOST, port=SERVER_PORT)
     except KeyboardInterrupt:
-        logger.info(f"Stoping Pytest-GUI app")
-        http_server.stop()
+        logger.info("Stopping Pytest-GUI app")
 
 
 if __name__ == '__main__':
