@@ -3,11 +3,11 @@ test:
     operationId: "test.test.get"
     tags:
       - "Tests"
-    summary: "Get all tests"
-    description: "Get the list of tests"
+    summary: "Get the list of collected tests"
+    description: "Get the list of collected tests"
     responses:
       "200":
-        description: "Successfully got test list operation"
+        description: "Successfully got the list of collected tests"
         content:
           application/json:
             schema:
@@ -19,7 +19,7 @@ test:
     operationId: "test.test.select"
     tags:
       - "Tests"
-    summary: "Selects a test"
+    summary: "Selects a tests to run"
     description: "Select tests to run"
     requestBody:
       description: "The tests to update."
@@ -27,16 +27,9 @@ test:
       content:
         application/json:
           schema:
-            type: object
-            required:
-              - "selected"
-            properties:
-              name:
-                type: string
-              module:
-                type: string
-              selected:
-                type: boolean
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Test"
     responses:
       "201":
         description: "Selected"
