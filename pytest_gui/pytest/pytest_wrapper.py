@@ -133,6 +133,9 @@ class PytestWorker:
         return self.markers
 
     def run_tests(self):
+        if self.tests is None:
+            raise RuntimeError("No tests available")
+
         pytest_arg = [test["nodeid"] for test in self.tests if test["selected"]]
         p, conn = self._run_pytest(*pytest_arg)
         self._cur_tests = p
@@ -142,13 +145,15 @@ class PytestWorker:
         _StatusUpdate(self).start()
 
     def stop_tests(self):
+        if self._cur_tests is None:
+            raise RuntimeError("No currently running tests")
+
         # TODO: Race condition?
-        if self._cur_tests is not None:
-            self._cur_tests.kill()
-            self._cur_tests = None
-            self.tests_running = False
-            self.test_stream_connection = None
-            self._remove_proccess(self._cur_tests.pid)
+        self._cur_tests.kill()
+        self._cur_tests = None
+        self.tests_running = False
+        self.test_stream_connection = None
+        self._remove_proccess(self._cur_tests.pid)
 
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)

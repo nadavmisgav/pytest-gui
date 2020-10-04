@@ -12,10 +12,16 @@ def discover():
 
 
 def run_tests():
-    worker.run_tests()
-    return
+    try:
+        worker.run_tests()
+    except RuntimeError as e:
+        return Response(status=500, response=str(e))
+    return Response(status=200, response="Started running tests")
 
 
 def stop_tests():
-    worker.stop_tests()
-    return
+    try:
+        worker.stop_tests()
+    except RuntimeError as e:
+        return Response(status=500, response=str(e))
+    return Response(status=200, response="Stopped currently running tests")

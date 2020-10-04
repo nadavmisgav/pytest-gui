@@ -27,10 +27,20 @@ run:
     tags:
       - "Actions"
     summary: "Run tests"
-    description: "Run the tests"
+    description: "Run the selected tests"
     responses:
       "200":
         description: "Successfully started running tests"
+        content:
+          text/json:
+            schema:
+              type: string
+      "400":
+        description: "Failed to run tests"
+        content:
+          text/json:
+            schema:
+              type: string
 
 stop:
   get:
@@ -38,7 +48,7 @@ stop:
     tags:
       - "Actions"
     summary: "Stop tests"
-    description: "Stop the tests"
+    description: "Stop the currently running tests"
     responses:
       "200":
         description: "Successfully stopped running tests"
