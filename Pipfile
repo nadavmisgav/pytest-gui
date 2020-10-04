@@ -9,7 +9,6 @@ flask = "*"
 connexion = {extras = ["swagger-ui"],version = "*"}
 pytest-html = "*"
 waitress = "*"
-prance = "*"
 
 [requires]
 python_version = "3.8"
@@ -22,3 +21,4 @@ pre-commit = "*"
 flake8 = "*"
 flake8-import-order = "*"
 flake8-print = "*"
+prance = "*"
