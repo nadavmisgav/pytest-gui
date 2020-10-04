@@ -1,6 +1,6 @@
 discover:
   get:
-    operationId: "discover.discover.get"
+    operationId: "actions.actions.discover"
     tags:
       - "Actions"
     summary: "The tests data structure supported by the server application"
@@ -20,3 +20,25 @@ discover:
           text/json:
             schema:
               type: string
+
+run:
+  get:
+    operationId: "actions.actions.run_tests"
+    tags:
+      - "Actions"
+    summary: "Run tests"
+    description: "Run the tests"
+    responses:
+      "200":
+        description: "Successfully started running tests"
+
+stop:
+  get:
+    operationId: "actions.actions.stop_tests"
+    tags:
+      - "Actions"
+    summary: "Stop tests"
+    description: "Stop the tests"
+    responses:
+      "200":
+        description: "Successfully stopped running tests"

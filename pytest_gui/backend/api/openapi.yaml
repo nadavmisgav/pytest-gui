@@ -10,17 +10,15 @@ servers:
 
 paths:
   /discover:
-    $ref: "./endpoints/discover/discover.yaml#/discover"
+    $ref: "./endpoints/actions/actions.yaml#/discover"
+  /run:
+    $ref: "./endpoints/actions/actions.yaml#/run"
+  /stop:
+    $ref: "./endpoints/actions/actions.yaml#/stop"
   /markers:
     $ref: "./endpoints/markers/markers.yaml#/markers"
   /test:
     $ref: "./endpoints/test/test.yaml#/test"
-  /select:
-    $ref: "./endpoints/test/test.yaml#/select"
-  /run:
-    $ref: "./endpoints/test/test.yaml#/run"
-  /stop:
-    $ref: "./endpoints/test/test.yaml#/stop"
   /status:
     $ref: "./endpoints/streams/streams.yaml#/status"
   /logs:

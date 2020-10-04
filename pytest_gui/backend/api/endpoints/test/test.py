@@ -24,13 +24,3 @@ def select(test):
 
 def get():
     return worker.tests
-
-
-def run():
-    worker.run_tests()
-    return
-
-
-def stop():
-    worker.stop_tests()
-    return

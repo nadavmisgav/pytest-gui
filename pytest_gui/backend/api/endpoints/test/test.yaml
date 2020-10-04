@@ -15,7 +15,6 @@ test:
               items:
                 $ref: "../../openapi.yaml#/components/schemas/Test"
 
-select:
   put:
     operationId: "test.test.select"
     tags:
@@ -47,25 +46,3 @@ select:
               type: array
               items:
                 $ref: "../../openapi.yaml#/components/schemas/Test"
-
-run:
-  get:
-    operationId: "test.test.run"
-    tags:
-      - "Actions"
-    summary: "Run tests"
-    description: "Run the tests"
-    responses:
-      "200":
-        description: "Successfully started running tests"
-
-stop:
-  get:
-    operationId: "test.test.stop"
-    tags:
-      - "Actions"
-    summary: "Stop tests"
-    description: "Stop the tests"
-    responses:
-      "200":
-        description: "Successfully stopped running tests"
