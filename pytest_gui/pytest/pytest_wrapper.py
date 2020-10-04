@@ -110,6 +110,13 @@ class PytestWorker:
             conn.close()
             p.wait()
 
+        if p.returncode != 0:
+            logger.error(f"Failed to collect tests:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
+            return None
+
+        logger.info(f"Collected {len(self.tests)} tests")
+        return self.tests
+
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
         p.wait()

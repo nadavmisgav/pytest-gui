@@ -14,3 +14,9 @@ discover:
               type: array
               items:
                 $ref: "../../openapi.yaml#/components/schemas/Test"
+      "500":
+        description: "Failed to collect tests"
+        content:
+          text/json:
+            schema:
+              type: string
