@@ -49,17 +49,3 @@ components:
       properties:
         name:
           type: string
-
-    TestStatus:
-      type: object
-      properties:
-        nodeid:
-          type: string
-        outcome:
-          type: string
-          enum: ["passed", "failed", "skipped"]
-        when:
-          type: string
-          enum: ["setup", "call", "teardown"]
-        duration:
-          type: string
