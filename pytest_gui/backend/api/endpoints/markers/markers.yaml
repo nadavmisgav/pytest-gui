@@ -6,7 +6,7 @@ markers:
     summary: "The test markers registered"
     description: "Get the list of markers"
     responses:
-      200:
+      "200":
         description: "Successfully got marker list operation"
         content:
           application/json:

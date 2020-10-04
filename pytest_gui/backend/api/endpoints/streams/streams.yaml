@@ -6,7 +6,7 @@ status:
     summary: "Stream test results"
     description: "Stream the test results"
     responses:
-      200:
+      "200":
         description: "Successfully stream running test results"
         content:
           text/event-stream:
@@ -21,7 +21,7 @@ logs:
     summary: "Stream test logs"
     description: "Stream the test logs"
     responses:
-      200:
+      "200":
         description: "Successfully stream running test logs"
         content:
           text/event-stream:
