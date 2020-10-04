@@ -59,6 +59,7 @@ class _TestRunner(Thread):
                     self.worker.log_queue.put(output.strip())
             self.worker._cur_tests.wait()
 
+            self._remove_proccess(self.worker._cur_tests.pid)
             self.worker._cur_tests = None
             self.worker.tests_running = False
             self.worker.test_stream_connection = None
@@ -97,6 +98,7 @@ class PytestWorker:
         self._listener = Listener(ADDRESS)
         self.log_queue = Queue()
         self.status_queue = Queue()
+        self._process = {}
 
     def __del__(self):
         self._listener.close()
@@ -109,6 +111,7 @@ class PytestWorker:
         finally:
             conn.close()
             p.wait()
+            self._remove_proccess(p.pid)
 
         if p.returncode != 0:
             logger.error(f"Failed to collect tests:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
@@ -120,6 +123,7 @@ class PytestWorker:
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
         p.wait()
+        self._remove_proccess(p.pid)
         if p.returncode != 0:
             logger.error(f"Failed to get markers:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
             return None
@@ -144,6 +148,7 @@ class PytestWorker:
             self._cur_tests = None
             self.tests_running = False
             self.test_stream_connection = None
+            self._remove_proccess(self._cur_tests.pid)
 
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
@@ -151,7 +156,14 @@ class PytestWorker:
         p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
         logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
+        self._process[p.pid] = p
         return p, conn
+
+    def _remove_proccess(self, pid):
+        try:
+            self._process.pop(pid)
+        except KeyError:
+            logger.warning(f"Trying to remove non-existing pid {pid}")
 
 
 worker = PytestWorker(TEST_DIR)
