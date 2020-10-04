@@ -21,6 +21,7 @@ app = connexion.FlaskApp(__name__, specification_dir='./api/')
 logger = app.app.logger
 logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
 logger.handlers[0].setFormatter(logging.Formatter('[%(asctime)s]::%(levelname)s::%(message)s'))
+logger.propagate = False
 
 
 app.add_api('swagger.yaml')
@@ -33,10 +34,7 @@ def react_app():
 
 def cmd(argv=sys.argv):
     logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [DEBUG={DEBUG}]")
-    try:
-        serve(app, host=HOST, port=SERVER_PORT)
-    except KeyboardInterrupt:
-        logger.info("Stopping Pytest-GUI app")
+    serve(app, host=HOST, port=SERVER_PORT)
 
 
 if __name__ == '__main__':
