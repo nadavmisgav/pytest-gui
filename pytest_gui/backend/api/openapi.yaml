@@ -43,9 +43,13 @@ components:
             $ref: "#/components/schemas/Marker"
         selected:
           type: boolean
+      required:
+        - nodeid
+        - module
+        - file
+        - id
+        - markers
+        - selected
 
     Marker:
-      type: object
-      properties:
-        name:
-          type: string
+      type: string

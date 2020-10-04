@@ -27,6 +27,7 @@ test:
       content:
         application/json:
           schema:
+            x-body-name: "tests"
             type: array
             items:
               $ref: "../../openapi.yaml#/components/schemas/Test"
