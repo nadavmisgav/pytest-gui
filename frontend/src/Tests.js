@@ -1,4 +1,5 @@
 import React from "react";
+import Collapsible from "react-collapsible";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Tests.css";
@@ -7,8 +8,37 @@ import { Row, Col } from "react-bootstrap";
 function Tests() {
   return (
     <React.Fragment>
+      <Row className="title-row">
+        <Col className="col-8">
+          <span>Tests</span>
+        </Col>
+        <Col className="col-4">
+          <span>Logs</span>
+        </Col>
+      </Row>
       <Row className="Tests mb-4">
-        <Col className="tests col-8"></Col>
+        <Col className="tests col-8">
+          <Collapsible trigger="Start here">
+            <p>
+              This is the collapsible content. It can be any element or React
+              component you like.
+            </p>
+            <p>
+              It can even be another Collapsible component. Check out the next
+              section!
+            </p>
+          </Collapsible>
+          <Collapsible trigger="Start here">
+            <p>
+              This is the collapsible content. It can be any element or React
+              component you like.
+            </p>
+            <p>
+              It can even be another Collapsible component. Check out the next
+              section!
+            </p>
+          </Collapsible>
+        </Col>
         <Col className="logs col-4">
           <p id="log-area">
             Labore ea ad et in. Sit occaecat deserunt exercitation id commodo

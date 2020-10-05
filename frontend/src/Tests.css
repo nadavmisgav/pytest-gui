@@ -1,5 +1,14 @@
-.Tests {
-  position: relative;
+.title-row {
+  background-color: rgb(40, 44, 52) !important;
+}
+
+.title-row > .col {
+  padding: 0;
+}
+
+.title-row > .col > span {
+  color: rgb(41, 184, 219);
+  text-transform: uppercase;
 }
 
 .Tests > .col {
@@ -7,21 +16,9 @@
   overflow-y: scroll;
   width: 20%;
   height: 80vh;
-  text-align: left;
-}
-
-.Tests > .title {
-  position: absolute;
-  top: -22px;
-  color: rgb(41, 184, 219);
-  text-transform: uppercase;
 }
 
 .Tests > .row {
   flex-direction: column;
   justify-content: space-between;
-}
-
-.logs {
-  text-align: left;
 }
