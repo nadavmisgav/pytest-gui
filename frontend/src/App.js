@@ -1,12 +1,14 @@
 import React from "react";
-import { Navbar, Nav, Container, Row } from "react-bootstrap";
-import Tests from "./Tests";
+import { useState } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import Actions from "./Actions";
+import Tests from "./Tests";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
+  const [tests, setTests] = useState([]);
   return (
     <div className="App">
       <Navbar>
@@ -26,7 +28,8 @@ function App() {
         </Nav>
       </Navbar>
       <Container className="inner">
-        <Actions />
+        <Actions tests={tests} setTests={setTests} />
+        <Tests />
       </Container>
     </div>
   );

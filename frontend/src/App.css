@@ -3,6 +3,7 @@
   color: rgb(171, 178, 178);
   text-align: center;
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 .navbar {
@@ -38,7 +39,7 @@
   width: 90%;
   margin: 80px auto;
   padding: 0;
-  border: 2px solid rebeccapurple;
+  /* border: 2px solid rebeccapurple; */
   background-color: rgb(40, 44, 52);
 }
 
@@ -46,4 +47,15 @@
   background-color: rgb(33, 37, 43);
   width: 100%;
   margin: 0 0;
+}
+
+/* .row > .col {
+  border: 2px solid rebeccapurple;
+} */
+
+.header {
+  color: rgb(41, 184, 219);
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1px;
 }
