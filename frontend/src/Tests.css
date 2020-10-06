@@ -46,21 +46,7 @@
   border: 1px solid rgb(40, 49, 60);
   padding: 10px;
   background: rgb(40, 44, 52);
-  color: rgb(171, 178, 178);
-}
-.Collapsible__trigger:after {
-  color: aquamarine;
-  font-family: "Font Awesome 5 Free";
-  content: "\f107";
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  display: block;
-  transition: transform 200ms;
-}
-
-.Collapsible__trigger:after.is-open::after {
-  transform: rotateZ(180deg);
+  cursor: pointer;
 }
 
 .checkbox-container {
@@ -83,13 +69,13 @@
 
 .checkmark {
   position: absolute;
-  top: 50%;
-  left: 5px;
   height: 12px;
   width: 12px;
-  transform: translateY(-50%);
   background-color: rgb(40, 44, 52);
   border: 1px solid rgb(41, 184, 219);
+  top: 50%;
+  transform: translateY(-2px);
+  transition: 0.3s;
 }
 
 .checkbox-container input:checked ~ .checkmark {
@@ -102,4 +88,53 @@
 
 .Collapsible__contentInner > .test-item:hover {
   background-color: rgb(33, 37, 43);
+}
+
+.test-item {
+  position: relative;
+  display: flex;
+}
+
+.test-item > i {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: none;
+  transform: translateY(-50%);
+}
+
+.test-item > i {
+  display: block;
+  color: rgb(152, 191, 121);
+}
+
+.test-item > i.warn {
+  display: block;
+  color: rgb(229, 164, 45);
+}
+
+.test-item > i.fail {
+  display: block;
+  color: rgb(194, 64, 52);
+}
+
+.test-item > span {
+  margin-left: 18px;
+}
+
+#toggle-buttons {
+  justify-content: flex-end;
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+#toggle-buttons > small {
+  margin-left: 10px;
+  text-transform: uppercase;
+  opacity: 50%;
+}
+
+#toggle-buttons > small:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }

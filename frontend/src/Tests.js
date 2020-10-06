@@ -5,19 +5,100 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Tests.css";
 import { Row, Col } from "react-bootstrap";
 
-function TestItem({ name }) {
+function handleCheck(e, tests, setTests) {
+  e.stopPropagation();
+
+  let newTests = tests.slice(0);
+  let target_id = e.target.id;
+  let foundIndex = tests.findIndex((x) => x.id === target_id);
+  newTests[foundIndex].selected = !tests[foundIndex].selected;
+
+  setTests(newTests);
+}
+
+function TestItem({ name, selected, module, tests, setTests }) {
   return (
     <div className="test-item">
       <label className="checkbox-container">
-        <input type="checkbox" />
-        <span className="checkmark"></span>
+        <input type="checkbox" checked={selected} />
+        <span
+          id={name}
+          className="checkmark"
+          onClick={(e) => {
+            handleCheck(e, tests, setTests);
+          }}
+        ></span>
       </label>
+      <i className="test-result fas fa-flag"></i>
       <span>{name}</span>
     </div>
   );
 }
 
-function Tests() {
+function TestModule({ name, tests, setTests }) {
+  const test_items = tests.map(({ id, selected }) => {
+    return (
+      <TestItem
+        key={id}
+        name={id}
+        selected={selected}
+        tests={tests}
+        setTests={setTests}
+      />
+    );
+  });
+  return (
+    <Row className="row-12">
+      <Col className="col-12">
+        <Collapsible
+          trigger={<TestItem name={name} module={true} />}
+          transitionTime={200}
+          open={true}
+        >
+          {test_items}
+        </Collapsible>
+      </Col>
+    </Row>
+  );
+}
+
+function toggleModules(expand) {
+  let modules = [...document.getElementsByClassName("Collapsible__trigger")];
+  let class_name = expand ? "is-closed" : "is-open";
+  modules.forEach((module) => {
+    if (module.classList.contains(class_name)) {
+      module.click();
+    }
+  });
+}
+
+function Modules({ tests, setTests }) {
+  let modules = [];
+
+  const test_modules = modules.map((module) => {
+    return <TestModule key={module["name"]} {...module} setTests={setTests} />;
+  });
+
+  return test_modules;
+}
+
+function TestArea({ tests, setTests }) {
+  if (tests.length === 0) {
+    return <h4>No tests collected</h4>;
+  }
+
+  return (
+    <React.Fragment>
+      <Row id="toggle-buttons">
+        <small onClick={() => toggleModules(true)}>expand</small>
+        <small onClick={() => toggleModules(false)}>collapse</small>
+      </Row>
+      <Modules tests={tests} setTests={setTests} />
+    </React.Fragment>
+  );
+}
+
+function Tests({ tests, setTests, logs }) {
   return (
     <React.Fragment>
       <Row className="title-row">
@@ -30,64 +111,10 @@ function Tests() {
       </Row>
       <Row className="Tests mb-4">
         <Col className="tests col-8">
-          <Collapsible
-            trigger={<TestItem name="Test1" />}
-            transitionTime="200"
-            open={true}
-          >
-            <TestItem name="innerTest1" />
-            <TestItem name="innerTest2" />
-          </Collapsible>
-          <Collapsible trigger="Start here">
-            <p>
-              This is the collapsible content. It can be any element or React
-              component you like.
-            </p>
-            <p>
-              It can even be another Collapsible component. Check out the next
-              section!
-            </p>
-          </Collapsible>
+          <TestArea tests={tests} setTests={setTests} />
         </Col>
         <Col className="logs col-4">
-          <p id="log-area">
-            Labore ea ad et in. Sit occaecat deserunt exercitation id commodo
-            commodo ullamco pariatur consectetur pariatur cupidatat ex. Sint
-            nostrud quis consequat pariatur aliqua veniam reprehenderit
-            proident. Minim est cillum ut nostrud ullamco. Cillum et aute labore
-            est ad in commodo irure eiusmod. Labore id nostrud laboris non sint
-            consectetur sunt. Irure ea qui laborum pariatur labore cupidatat
-            reprehenderit eu est officia pariatur do sint. Aliquip qui magna
-            anim ea qui aute aute sint sint non quis excepteur sit. Et nulla
-            fugiat ea nisi laborum mollit aute mollit esse ex id veniam. Duis
-            deserunt sunt consectetur et est amet magna incididunt duis mollit
-            cupidatat cupidatat aute. Cupidatat sit cillum sunt reprehenderit
-            quis. Elit labore aliquip excepteur ut dolor officia. Magna cillum
-            excepteur ullamco magna non occaecat ut minim excepteur consequat
-            incididunt. Exercitation in labore labore et nostrud esse minim eu
-            exercitation incididunt aliquip anim. Id anim anim in id cupidatat
-            labore. Mollit aliquip dolor veniam eiusmod consequat. Deserunt
-            consectetur tempor aliqua eiusmod commodo commodo sint. Ex irure
-            enim aliquip mollit dolor pariatur quis voluptate amet. Labore ea ad
-            et in. Sit occaecat deserunt exercitation id commodo commodo ullamco
-            pariatur consectetur pariatur cupidatat ex. Sint nostrud quis
-            consequat pariatur aliqua veniam reprehenderit proident. Minim est
-            cillum ut nostrud ullamco. Cillum et aute labore est ad in commodo
-            irure eiusmod. Labore id nostrud laboris non sint consectetur sunt.
-            Irure ea qui laborum pariatur labore cupidatat reprehenderit eu est
-            officia pariatur do sint. Aliquip qui magna anim ea qui aute aute
-            sint sint non quis excepteur sit. Et nulla fugiat ea nisi laborum
-            mollit aute mollit esse ex id veniam. Duis deserunt sunt consectetur
-            et est amet magna incididunt duis mollit cupidatat cupidatat aute.
-            Cupidatat sit cillum sunt reprehenderit quis. Elit labore aliquip
-            excepteur ut dolor officia. Magna cillum excepteur ullamco magna non
-            occaecat ut minim excepteur consequat incididunt. Exercitation in
-            labore labore et nostrud esse minim eu exercitation incididunt
-            aliquip anim. Id anim anim in id cupidatat labore. Mollit aliquip
-            dolor veniam eiusmod consequat. Deserunt consectetur tempor aliqua
-            eiusmod commodo commodo sint. Ex irure enim aliquip mollit dolor
-            pariatur quis voluptate amet.
-          </p>
+          <p id="log-area">{logs}</p>
         </Col>
       </Row>
     </React.Fragment>

@@ -10,6 +10,8 @@ import "./App.css";
 
 function App() {
   const [tests, setTests] = useState([]);
+  const [logs, setLogs] = useState([]);
+
   return (
     <div className="App">
       <Navbar>
@@ -30,7 +32,7 @@ function App() {
       </Navbar>
       <Container className="inner">
         <Actions tests={tests} setTests={setTests} />
-        <Tests />
+        <Tests tests={tests} setTests={setTests} />
       </Container>
     </div>
   );
