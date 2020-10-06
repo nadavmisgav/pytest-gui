@@ -16,9 +16,90 @@
   overflow-y: scroll;
   width: 20%;
   height: 80vh;
+  padding: 20px;
 }
 
 .Tests > .row {
   flex-direction: column;
   justify-content: space-between;
+}
+
+.Collapsible {
+  background-color: rgb(40, 44, 52);
+}
+
+.Collapsible__contentInner {
+  padding: 10px;
+  border: 1px solid rgb(40, 49, 60);
+  border-top: 0;
+}
+.Collapsible__contentInner > p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.Collapsible__trigger {
+  display: block;
+  text-decoration: none;
+  position: relative;
+  border: 1px solid rgb(40, 49, 60);
+  padding: 10px;
+  background: rgb(40, 44, 52);
+  color: rgb(171, 178, 178);
+}
+.Collapsible__trigger:after {
+  color: aquamarine;
+  font-family: "Font Awesome 5 Free";
+  content: "\f107";
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: block;
+  transition: transform 200ms;
+}
+
+.Collapsible__trigger:after.is-open::after {
+  transform: rotateZ(180deg);
+}
+
+.checkbox-container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  height: 12px;
+  width: 12px;
+  transform: translateY(-50%);
+  background-color: rgb(40, 44, 52);
+  border: 1px solid rgb(41, 184, 219);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: rgb(41, 184, 219);
+}
+
+.Collapsible__contentInner > .test-item {
+  margin-left: 40px;
+}
+
+.Collapsible__contentInner > .test-item:hover {
+  background-color: rgb(33, 37, 43);
 }

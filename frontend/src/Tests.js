@@ -5,6 +5,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Tests.css";
 import { Row, Col } from "react-bootstrap";
 
+function TestItem({ name }) {
+  return (
+    <div className="test-item">
+      <label className="checkbox-container">
+        <input type="checkbox" />
+        <span className="checkmark"></span>
+      </label>
+      <span>{name}</span>
+    </div>
+  );
+}
+
 function Tests() {
   return (
     <React.Fragment>
@@ -18,15 +30,13 @@ function Tests() {
       </Row>
       <Row className="Tests mb-4">
         <Col className="tests col-8">
-          <Collapsible trigger="Start here">
-            <p>
-              This is the collapsible content. It can be any element or React
-              component you like.
-            </p>
-            <p>
-              It can even be another Collapsible component. Check out the next
-              section!
-            </p>
+          <Collapsible
+            trigger={<TestItem name="Test1" />}
+            transitionTime="200"
+            open={true}
+          >
+            <TestItem name="innerTest1" />
+            <TestItem name="innerTest2" />
           </Collapsible>
           <Collapsible trigger="Start here">
             <p>
