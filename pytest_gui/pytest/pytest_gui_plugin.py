@@ -40,7 +40,6 @@ class PytestGuiPlugin:
             "id": item.name,
             "module": item.location[0].split("/")[0] if "/" in item.location[0] else "",
             "file": item.location[0].split("/")[1] if "/" in item.location[0] else item.location[0],
-            "selected": True,
             "markers": [marker.name for marker in item.own_markers if marker.name not in _builtin_markers],
         } for item in session.items]))
 

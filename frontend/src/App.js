@@ -10,9 +10,24 @@ import "./App.css";
 
 export const BASE_URL = "http://localhost:5000/api";
 
+const log = (e) => {
+  console.log(e);
+};
+
 function App() {
   const [tests, setTests] = useState([]);
   const [logs, setLogs] = useState([]);
+
+  let logEvents = new EventSource(`${BASE_URL}/logs`);
+  // let statusEvents = new EventSource(`${BASE_URL}/status`);
+
+  logEvents.addEventListener("message", log, false);
+  logEvents.addEventListener("open", log, false);
+  logEvents.addEventListener("error", log, false);
+
+  // statusEvents.addEventListener("message", log, false);
+  // statusEvents.addEventListener("open", log, false);
+  // statusEvents.addEventListener("error", log, false);
 
   return (
     <div className="App">
@@ -26,11 +41,11 @@ function App() {
             alt="pytest logo"
           />
         </Navbar.Brand>
-        <Nav>
+        {/* <Nav>
           <Nav.Item>
             <Nav.Link href="#reports">reports</Nav.Link>
           </Nav.Item>
-        </Nav>
+        </Nav> */}
       </Navbar>
       <Container className="inner">
         <Actions tests={tests} setTests={setTests} />

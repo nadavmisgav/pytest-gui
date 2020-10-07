@@ -21,7 +21,14 @@ function discover(e, setTests) {
   axios
     .get(`${BASE_URL}/discover`)
     .then((res) => {
-      const tests = res.data;
+      const tests = res.data.map((test) => {
+        return {
+          selected: true,
+          state: "",
+          ...test,
+        };
+      });
+
       setTests(tests);
       toast.success(`Discovered ${tests.length} tests`);
     })
@@ -30,10 +37,13 @@ function discover(e, setTests) {
     });
 }
 
-function startTests(e) {
+
+function startTests(e, tests, setTests) {
   e.preventDefault();
+  const selected_tests = tests.filter((test) => test.selected);
+
   axios
-    .get(`${BASE_URL}/run`)
+    .post(`${BASE_URL}/run`, selected_tests)
     .then((res) => {
       toast.success(`Started running tests`);
     })
@@ -83,7 +93,7 @@ function ActionButtons({ tests, setTests }) {
         <ActionButton
           icon="fa-play"
           description="Start tests"
-          onClick={startTests}
+          onClick={(e) => startTests(e, tests, setTests)}
         />
         <ActionButton
           icon="fa-stop"
@@ -112,7 +122,7 @@ function Actions({ tests, setTests }) {
             <Col className="col-8">
               <Form>
                 <Form.Group controlId="formFilter">
-                  <Form.Control type="input" />
+                  <Form.Control type="input" placeholder="test name" />
                   {/* <Form.Text className="text-muted">
                   Example
                 </Form.Text> */}

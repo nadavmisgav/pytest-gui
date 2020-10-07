@@ -11,9 +11,9 @@ def discover():
         return tests
 
 
-def run_tests():
+def run_tests(tests):
     try:
-        worker.run_tests()
+        worker.run_tests(tests)
     except RuntimeError as e:
         return Response(status=500, response=str(e))
     return Response(status=200, response="Started running tests")

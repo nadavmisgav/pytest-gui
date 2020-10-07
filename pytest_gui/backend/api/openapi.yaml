@@ -17,8 +17,6 @@ paths:
     $ref: "./endpoints/actions/actions.yaml#/stop"
   /markers:
     $ref: "./endpoints/markers/markers.yaml#/markers"
-  /test:
-    $ref: "./endpoints/test/test.yaml#/test"
   /status:
     $ref: "./endpoints/streams/streams.yaml#/status"
   /logs:
@@ -41,15 +39,12 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Marker"
-        selected:
-          type: boolean
       required:
         - nodeid
         - module
         - file
         - id
         - markers
-        - selected
 
     Marker:
       type: string

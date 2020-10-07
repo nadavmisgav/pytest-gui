@@ -16,7 +16,9 @@ function handleCheck(e, tests, setTests) {
   setTests(newTests);
 }
 
-function TestItem({ name, selected, module, tests, setTests }) {
+function TestItem({ name, selected, state, module, tests, setTests }) {
+  let stateFlagClass = "test-result fas fa-flag " + state;
+  console.log(stateFlagClass);
   return (
     <div className="test-item">
       <label className="checkbox-container">
@@ -29,14 +31,14 @@ function TestItem({ name, selected, module, tests, setTests }) {
           }}
         ></span>
       </label>
-      <i className="test-result fas fa-flag"></i>
+      <i className={stateFlagClass}></i>
       <span>{name}</span>
     </div>
   );
 }
 
 function TestModule({ name, tests, setTests }) {
-  const test_items = tests.map(({ id, selected }) => {
+  const test_items = tests.map(({ id, selected, state }) => {
     return (
       <TestItem
         key={id}
@@ -44,6 +46,7 @@ function TestModule({ name, tests, setTests }) {
         selected={selected}
         tests={tests}
         setTests={setTests}
+        state={state}
       />
     );
   });

@@ -59,7 +59,7 @@ class _TestRunner(Thread):
                     self.worker.log_queue.put(output.strip())
             self.worker._cur_tests.wait()
 
-            self._remove_proccess(self.worker._cur_tests.pid)
+            self.worker._remove_proccess(self.worker._cur_tests.pid)
             self.worker._cur_tests = None
             self.worker.tests_running = False
             self.worker.test_stream_connection = None
@@ -90,7 +90,6 @@ class _StatusUpdate(Thread):
 class PytestWorker:
     def __init__(self, test_dir):
         self.test_dir = test_dir
-        self.tests = None
         self.markers = None
         self.tests_running = False
         self.test_stream_connection = None
@@ -107,7 +106,7 @@ class PytestWorker:
         p, conn = self._run_pytest(self.test_dir, "--collect-only")
         logger.debug(f'Connection accepted from {self._listener.last_accepted}')
         try:
-            self.tests = json.loads(conn.recv())  # Only one message
+            tests = json.loads(conn.recv())  # Only one message
         finally:
             conn.close()
             p.wait()
@@ -117,8 +116,8 @@ class PytestWorker:
             logger.error(f"Failed to collect tests:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
             return None
 
-        logger.info(f"Collected {len(self.tests)} tests")
-        return self.tests
+        logger.info(f"Collected {len(tests)} tests")
+        return tests
 
     def get_markers(self):
         p, _ = self._run_pytest(self.test_dir, "--markers")
@@ -132,14 +131,14 @@ class PytestWorker:
         logger.info(f"Got {len(self.markers)} custom markers")
         return self.markers
 
-    def run_tests(self):
-        if self.tests is None:
+    def run_tests(self, tests):
+        if tests is None:
             raise RuntimeError("No tests available")
 
-        pytest_arg = [test["nodeid"] for test in self.tests if test["selected"]]
+        self.tests_running = True
+        pytest_arg = [test["nodeid"] for test in tests]
         p, conn = self._run_pytest(*pytest_arg)
         self._cur_tests = p
-        self.tests_running = True
         self.test_stream_connection = conn
         _TestRunner(self).start()
         _StatusUpdate(self).start()

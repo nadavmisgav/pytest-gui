@@ -22,12 +22,22 @@ discover:
               type: string
 
 run:
-  get:
+  post:
     operationId: "actions.actions.run_tests"
     tags:
       - "Actions"
     summary: "Run tests"
     description: "Run the selected tests"
+    requestBody:
+      description: "The tests to update."
+      required: true
+      content:
+        application/json:
+          schema:
+            x-body-name: "tests"
+            type: array
+            items:
+              $ref: "../../openapi.yaml#/components/schemas/Test"
     responses:
       "200":
         description: "Successfully started running tests"
