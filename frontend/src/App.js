@@ -8,6 +8,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import "./App.css";
 
+export const BASE_URL = "http://localhost:5000/api";
+
 function App() {
   const [tests, setTests] = useState([]);
   const [logs, setLogs] = useState([]);

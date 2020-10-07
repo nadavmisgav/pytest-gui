@@ -7,6 +7,8 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
+import axios from "axios";
+import { BASE_URL } from "./App";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,9 +18,31 @@ import "./Actions.css";
 
 const notify = () => toast.success("Wow so easy !");
 
+function discover(e, setTests) {
+  e.preventDefault();
+  axios
+    .get(`${BASE_URL}/discover`)
+    .then((res) => {
+      const tests = res.data;
+      setTests(tests);
+      toast.success(`Discovered ${tests.length} tests`);
+    })
+    .catch((err) => {
+      toast.error("Failed discovering tests");
+    });
+}
+
+function selectAll(select, tests, setTests) {
+  let newTests = tests.slice(0);
+  newTests.forEach((test) => {
+    test.selected = select;
+  });
+
+  setTests(newTests);
+}
+
 function ActionButton({ icon, onClick, description }) {
   const className = "fas action-img " + icon;
-  console.log(className);
   return (
     <OverlayTrigger
       key={icon}
@@ -30,7 +54,7 @@ function ActionButton({ icon, onClick, description }) {
   );
 }
 
-function ActionButtons() {
+function ActionButtons({ tests, setTests }) {
   return (
     <Col>
       <Row className="action-buttons">
@@ -47,14 +71,14 @@ function ActionButtons() {
         <ActionButton
           icon="fa-search"
           description="Discover tests"
-          onClick={notify}
+          onClick={(e) => discover(e, setTests)}
         />
       </Row>
     </Col>
   );
 }
 
-function Actions({ tests, useTests }) {
+function Actions({ tests, setTests }) {
   return (
     <React.Fragment>
       <Row className="Actions mb-4">
@@ -74,12 +98,22 @@ function Actions({ tests, useTests }) {
               </Form>
             </Col>
             <Col>
-              <div className="dark-button">select all</div>
-              <div className="dark-button">clear all</div>
+              <div
+                className="dark-button"
+                onClick={() => selectAll(true, tests, setTests)}
+              >
+                select all
+              </div>
+              <div
+                className="dark-button"
+                onClick={() => selectAll(false, tests, setTests)}
+              >
+                clear all
+              </div>
             </Col>
           </Row>
         </Col>
-        <ActionButtons />
+        <ActionButtons tests={tests} setTests={setTests} />
       </Row>
 
       <ToastContainer

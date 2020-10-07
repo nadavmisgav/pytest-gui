@@ -2,10 +2,11 @@ import logging
 import os
 import sys
 
-
 import connexion
 
 from decouple import config
+
+from flask_cors import CORS
 
 from waitress import serve
 
@@ -17,6 +18,7 @@ HOST = "localhost"
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'api/endpoints')))
 app = connexion.FlaskApp(__name__, specification_dir='./api/')
+CORS(app.app)
 
 # Set logger
 logger = app.app.logger

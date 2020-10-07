@@ -103,7 +103,7 @@
   transform: translateY(-50%);
 }
 
-.test-item > i {
+.test-item > i.pass {
   display: block;
   color: rgb(152, 191, 121);
 }

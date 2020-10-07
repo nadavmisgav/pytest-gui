@@ -73,7 +73,25 @@ function toggleModules(expand) {
 }
 
 function Modules({ tests, setTests }) {
-  let modules = [];
+  let file_list = new Set();
+
+  tests.forEach((test) => {
+    file_list.add(test.file);
+  });
+
+  file_list = Array.from(file_list);
+
+  let modules = file_list.map((file) => {
+    return {
+      name: file,
+      tests: [],
+    };
+  });
+
+  tests.forEach((test) => {
+    let idx = modules.findIndex((item) => item.name === test.file);
+    modules[idx].tests.push(test);
+  });
 
   const test_modules = modules.map((module) => {
     return <TestModule key={module["name"]} {...module} setTests={setTests} />;

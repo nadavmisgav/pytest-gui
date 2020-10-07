@@ -12,6 +12,7 @@ setup(
         "clickclick==20.10.2",
         "connexion[swagger-ui]==2.7.0",
         "flask==1.1.2",
+        "flask-cors==3.0.9",
         "idna==2.10",
         "inflection==0.5.1",
         "iniconfig==1.0.1",

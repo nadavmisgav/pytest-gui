@@ -9,6 +9,7 @@ flask = "*"
 connexion = {extras = ["swagger-ui"],version = "*"}
 pytest-html = "*"
 waitress = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"
