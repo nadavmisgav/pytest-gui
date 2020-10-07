@@ -16,41 +16,40 @@ import "./Actions.css";
 
 const notify = () => toast.success("Wow so easy !");
 
-function ActionButton({ link, callback, description }) {
+function ActionButton({ icon, onClick, description }) {
+  const className = "fas action-img " + icon;
+  console.log(className);
   return (
     <OverlayTrigger
-      key={link}
+      key={icon}
       placement="top"
       overlay={<Tooltip id={"tooltip-top"}>{description}</Tooltip>}
     >
-      <img
-        className="action-img d-inline-block"
-        src={link}
-        alt={description}
-        onClick={callback}
-      />
+      <i className={className} onClick={onClick}></i>
     </OverlayTrigger>
   );
 }
 
 function ActionButtons() {
   return (
-    <Col className="action-buttons">
-      <ActionButton
-        link="/assets/play.svg"
-        description="Start tests"
-        callback={notify}
-      />
-      <ActionButton
-        link="/assets/stop.svg"
-        description="Stop tests"
-        callback={notify}
-      />
-      <ActionButton
-        link="/assets/search.svg"
-        description="Discover tests"
-        callback={notify}
-      />
+    <Col>
+      <Row className="action-buttons">
+        <ActionButton
+          icon="fa-play"
+          description="Start tests"
+          onClick={notify}
+        />
+        <ActionButton
+          icon="fa-stop"
+          description="Stop tests"
+          onClick={notify}
+        />
+        <ActionButton
+          icon="fa-search"
+          description="Discover tests"
+          onClick={notify}
+        />
+      </Row>
     </Col>
   );
 }
@@ -59,12 +58,12 @@ function Actions({ tests, useTests }) {
   return (
     <React.Fragment>
       <Row className="Actions mb-4">
-        <Col className="filter">
+        <Col className="filter col-8">
           <Row>
             <span className="header">filter</span>
           </Row>
           <Row>
-            <Col>
+            <Col className="col-8">
               <Form>
                 <Form.Group controlId="formFilter">
                   <Form.Control type="input" />
@@ -75,10 +74,8 @@ function Actions({ tests, useTests }) {
               </Form>
             </Col>
             <Col>
-              <Button className="dark-button">select all</Button>
-            </Col>
-            <Col>
-              <Button className="dark-button">clear all</Button>
+              <div className="dark-button">select all</div>
+              <div className="dark-button">clear all</div>
             </Col>
           </Row>
         </Col>

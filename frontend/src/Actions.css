@@ -1,6 +1,19 @@
+.action-buttons {
+  height: 100%;
+  margin: 0;
+
+  /* display: flex; */
+  position: relative;
+  right: 0;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .action-img {
-  width: 80px;
-  height: 80px;
+  font-size: 48px;
+  color: rgb(41, 184, 219);
+  margin: 0 15px;
+  height: fit-content;
 }
 
 .action-img:hover {
@@ -27,6 +40,7 @@
   border: 1px solid rgb(40, 44, 52);
   border-radius: 0 !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  /* width: 25vh; */
 }
 
 .form-control:focus {
@@ -38,15 +52,40 @@
 }
 
 .dark-button {
+  display: inline-block;
   text-transform: uppercase;
-  background-color: rgb(40, 44, 52);
   color: rgb(41, 184, 219);
   border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  width: fit-content;
+  padding: 4px 6px;
+  margin: 0;
 }
 
 .dark-button:hover {
-  text-transform: uppercase;
+  /* text-decoration: underline; */
   background-color: rgb(40, 44, 52);
-  color: rgb(41, 184, 219);
-  border: none;
+}
+
+.filter > .row {
+  margin: 10px 0;
+}
+
+.filter > .row > .col {
+  padding: 0;
+  margin: 0;
+  height: fit-content;
+}
+
+.filter > .row > .col:nth-child(2) {
+  text-align: right;
+}
+
+.filter > .row > .col:nth-child(2) > div {
+  margin-left: 5px;
+}
+
+.form-group {
+  margin: 0;
 }
