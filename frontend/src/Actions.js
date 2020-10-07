@@ -16,8 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Actions.css";
 
-const notify = () => toast.success("Wow so easy !");
-
 function discover(e, setTests) {
   e.preventDefault();
   axios
@@ -28,7 +26,31 @@ function discover(e, setTests) {
       toast.success(`Discovered ${tests.length} tests`);
     })
     .catch((err) => {
-      toast.error("Failed discovering tests");
+      toast.error("Failed discovering tests, check log");
+    });
+}
+
+function startTests(e) {
+  e.preventDefault();
+  axios
+    .get(`${BASE_URL}/run`)
+    .then((res) => {
+      toast.success(`Started running tests`);
+    })
+    .catch((err) => {
+      toast.error("Failed running tests, check log");
+    });
+}
+
+function stopTests(e) {
+  e.preventDefault();
+  axios
+    .get(`${BASE_URL}/stop`)
+    .then((res) => {
+      toast.success(`Stopped running tests`);
+    })
+    .catch((err) => {
+      toast.error("Failed stopping tests, check log");
     });
 }
 
@@ -61,12 +83,12 @@ function ActionButtons({ tests, setTests }) {
         <ActionButton
           icon="fa-play"
           description="Start tests"
-          onClick={notify}
+          onClick={startTests}
         />
         <ActionButton
           icon="fa-stop"
           description="Stop tests"
-          onClick={notify}
+          onClick={stopTests}
         />
         <ActionButton
           icon="fa-search"
