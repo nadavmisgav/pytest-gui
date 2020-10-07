@@ -150,10 +150,10 @@ class PytestWorker:
 
         # TODO: Race condition?
         self._cur_tests.kill()
-        self._cur_tests = None
         self.tests_running = False
         self.test_stream_connection = None
         self._remove_proccess(self._cur_tests.pid)
+        self._cur_tests = None
 
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
