@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import webbrowser
 
 import connexion
 
@@ -41,6 +42,7 @@ def react_app():
 
 def cmd(argv=sys.argv):
     logger.info(f"Starting Pytest-GUI app on {HOST}:{SERVER_PORT} [LOG_LEVEL={logging.getLevelName(logger.level)}]")
+    webbrowser.open_new_tab(f"http://{HOST}:{SERVER_PORT}")
     serve(app, host=HOST, port=SERVER_PORT)
 
 
