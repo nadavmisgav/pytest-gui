@@ -49,7 +49,7 @@ function TestItem({ name, selected, state, running, module, tests, setTests }) {
   }
 
   let onClick = module ? handleModuleCheck : handleCheck;
-  let stateFlagClass = "test-result fas fa-flag " + finalState;
+  let stateFlagClass = "test-result fas fa-beer " + finalState;
   return (
     <div className="test-item">
       <label className="checkbox-container">
@@ -174,7 +174,6 @@ function handleLock(e, lock, setLock) {
 }
 
 function Tests({ tests, setTests, lock, setLock }) {
-
   let mode = lock ? "lock" : "unlock";
 
   return (
