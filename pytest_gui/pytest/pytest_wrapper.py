@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import subprocess
 from multiprocessing.connection import Listener
 from queue import Queue
@@ -157,7 +158,9 @@ class PytestWorker:
     def _run_pytest(self, *args):
         command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
         logger.info(f"Runing command: {' '.join(command)}")
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True)
+        my_env = os.environ.copy()
+        my_env["PYTHONUNBUFFERED"] = "1"
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True, env=my_env)
         logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
         self._process[p.pid] = p
