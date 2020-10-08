@@ -29,6 +29,8 @@ function handleModuleCheck(e, tests, setTests, selected) {
     };
   });
 
+  console.log(newTests);
+
   setTests(newTests);
 }
 
@@ -62,19 +64,18 @@ function TestItem({ name, selected, state, running, module, tests, setTests }) {
       </label>
       <i className={stateFlagClass}></i>
       <span className={running ? "running" : ""}>{name}</span>
-      {/* {running && <span className="running" />} */}
     </div>
   );
 }
 
-function TestModule({ name, tests, setTests, selected }) {
+function TestModule({ name, tests, setTests, selected, allTests }) {
   const test_items = tests.map(({ id, selected, state, running }) => {
     return (
       <TestItem
         key={id}
         name={id}
         selected={selected}
-        tests={tests}
+        tests={allTests}
         setTests={setTests}
         state={state}
         running={running}
@@ -89,7 +90,7 @@ function TestModule({ name, tests, setTests, selected }) {
             <TestItem
               name={name}
               module
-              tests={tests}
+              tests={allTests}
               setTests={setTests}
               selected={selected}
             />
@@ -143,6 +144,7 @@ function Modules({ tests, setTests }) {
         {...module}
         setTests={setTests}
         selected={is_selected}
+        allTests={tests}
       />
     );
   });
@@ -193,9 +195,7 @@ function Tests({ tests, setTests }) {
         <Col className="tests col-8">
           <TestArea tests={tests} setTests={setTests} />
         </Col>
-        <Col className="logs col-4">
-          <p id="log-area"></p>
-        </Col>
+        <Col id="log-area" className="logs col-4"></Col>
       </Row>
     </React.Fragment>
   );

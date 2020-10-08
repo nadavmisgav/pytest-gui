@@ -49,8 +49,10 @@ function discover(e, setTests) {
 
 function handleLogs(e) {
   let logArea = document.getElementById("log-area");
-  let text = document.createTextNode(e.data);
-  logArea.appendChild(text);
+  let p = document.createElement("p");
+  let text = document.createTextNode(`${e.data}`);
+  p.appendChild(text);
+  logArea.appendChild(p);
 }
 
 const _translate = {
@@ -62,24 +64,23 @@ const _translate = {
 function handleStatus(e, tests, setTests) {
   let data = JSON.parse(e.data);
   if (data.when) {
-    let status = data.outcome;
-    let place = _translate[data.when];
     let newTests = Array.from(tests);
-    let idx = newTests.findIndex((test) => test.nodeid === data.nodeid);
-    newTests[idx].state[place] = status;
-    if (data.when == "teardown") {
-      let running_idx = newTests.findIndex((test) => test.running);
-      let next_running_idx =
-        newTests
-          .slice(running_idx + 1)
-          .findIndex((test) => test.selected, running_idx) +
-        running_idx +
-        1;
-
-      if (next_running_idx !== -1) {
-        newTests[next_running_idx].running = true;
+    if (data.when === "started") {
+      let started_idx = newTests.findIndex(
+        (test) => test.nodeid === data.nodeid
+      );
+      newTests[started_idx].running = true;
+    } else {
+      let status = data.outcome;
+      let place = _translate[data.when];
+      let idx = newTests.findIndex((test) => test.nodeid === data.nodeid);
+      newTests[idx].state[place] = status;
+      if (data.when === "teardown") {
+        let running_idx = newTests.findIndex(
+          (test) => test.nodeid === data.nodeid
+        );
+        newTests[running_idx].running = false;
       }
-      newTests[running_idx].running = false;
     }
     setTests(newTests);
   }
@@ -124,9 +125,9 @@ function startTests(e, tests, setTests) {
 
       logEvents.onmessage = (e) => handleLogs(e);
       statusEvents.onmessage = (e) => handleStatus(e, newTests, setTests);
-      newTests[
-        newTests.findIndex((test) => test === selected_tests[0])
-      ].running = true;
+      // newTests[
+      //   newTests.findIndex((test) => test === selected_tests[0])
+      // ].running = true;
       setTests(newTests);
       toast.success(`Started running tests`);
     })

@@ -34,6 +34,14 @@ class PytestGuiPlugin:
         self._conn.send('close')
         self._conn.close()
 
+    def pytest_runtest_logstart(self, nodeid, location):
+        self._conn.send(json.dumps({
+            'when': "started",
+            'outcome': "",
+            "nodeid": nodeid,
+            "duration": ""
+        }))
+
     def pytest_collection_finish(self, session):
         self._conn.send(json.dumps([{
             "nodeid": item.nodeid,

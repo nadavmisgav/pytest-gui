@@ -14,6 +14,7 @@
 .Tests > .col {
   position: relative;
   overflow-y: scroll;
+  overflow-wrap: break-word;
   width: 20%;
   height: 80vh;
   padding: 20px;
