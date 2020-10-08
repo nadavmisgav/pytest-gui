@@ -16,6 +16,7 @@ function App() {
   let init_tests = cache ? JSON.parse(cache).tests : [];
 
   const [tests, setTests] = useState(init_tests);
+  const [lock, setLock] = useState(true);
 
   localStorage.setItem(
     "cache",
@@ -43,8 +44,13 @@ function App() {
         </Nav> */}
       </Navbar>
       <Container className="inner">
-        <Actions tests={tests} setTests={setTests} />
-        <Tests tests={tests} setTests={setTests} />
+        <Actions tests={tests} setTests={setTests} lock={lock} />
+        <Tests
+          tests={tests}
+          setTests={setTests}
+          lock={lock}
+          setLock={setLock}
+        />
       </Container>
     </div>
   );

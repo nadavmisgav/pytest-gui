@@ -173,8 +173,8 @@ function handleLock(e, lock, setLock) {
   setLock(!lock);
 }
 
-function Tests({ tests, setTests }) {
-  let [lock, setLock] = useState(true);
+function Tests({ tests, setTests, lock, setLock }) {
+
   let mode = lock ? "lock" : "unlock";
 
   return (

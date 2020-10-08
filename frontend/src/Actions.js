@@ -47,12 +47,14 @@ function discover(e, setTests) {
     });
 }
 
-function handleLogs(e) {
+function handleLogs(e, lock) {
   let logArea = document.getElementById("log-area");
   let p = document.createElement("p");
   let text = document.createTextNode(`${e.data}`);
+
   p.appendChild(text);
   logArea.appendChild(p);
+  if (lock) logArea.scrollTop = logArea.scrollHeight;
 }
 
 const _translate = {
@@ -86,7 +88,7 @@ function handleStatus(e, tests, setTests) {
   }
 }
 
-function startTests(e, tests, setTests) {
+function startTests(e, tests, setTests, lock) {
   e.preventDefault();
   const target = e.target;
   target.classList.add("disabled");
@@ -113,7 +115,7 @@ function startTests(e, tests, setTests) {
   if (selected_tests.length === 0) {
     toast.error("No tests selected");
     target.classList.remove("disabled");
-    target.onClick = (e) => startTests(e, newTests, setTests);
+    target.onClick = (e) => startTests(e, newTests, setTests, lock);
     return;
   }
 
@@ -123,7 +125,7 @@ function startTests(e, tests, setTests) {
       let logEvents = new EventSource(`${BASE_URL}/logs`);
       let statusEvents = new EventSource(`${BASE_URL}/status`);
 
-      logEvents.onmessage = (e) => handleLogs(e);
+      logEvents.onmessage = (e) => handleLogs(e, lock);
       statusEvents.onmessage = (e) => handleStatus(e, newTests, setTests);
       // newTests[
       //   newTests.findIndex((test) => test === selected_tests[0])
@@ -136,7 +138,7 @@ function startTests(e, tests, setTests) {
     })
     .finally(() => {
       target.classList.remove("disabled");
-      target.onClick = (e) => startTests(e, newTests, setTests);
+      target.onClick = (e) => startTests(e, newTests, setTests, lock);
     });
 }
 
@@ -189,14 +191,14 @@ function ActionButton({ icon, onClick, description }) {
   );
 }
 
-function ActionButtons({ tests, setTests }) {
+function ActionButtons({ tests, setTests, lock }) {
   return (
     <Col>
       <Row className="action-buttons">
         <ActionButton
           icon="fa-play"
           description="Start tests"
-          onClick={(e) => startTests(e, tests, setTests)}
+          onClick={(e) => startTests(e, tests, setTests, lock)}
         />
         <ActionButton
           icon="fa-stop"
@@ -217,7 +219,7 @@ function formChange(e, setFilter) {
   setFilter(e.target.value);
 }
 
-function Actions({ tests, setTests }) {
+function Actions({ tests, setTests, lock }) {
   let [filter, setFilter] = useState("");
   let hidden = filter === "" ? "hidden" : "";
   return (
@@ -260,7 +262,7 @@ function Actions({ tests, setTests }) {
             </Col>
           </Row>
         </Col>
-        <ActionButtons tests={tests} setTests={setTests} />
+        <ActionButtons tests={tests} setTests={setTests} lock={lock} />
       </Row>
 
       <ToastContainer
