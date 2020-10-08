@@ -171,12 +171,10 @@ function handleLock(e, lock, setLock) {
   setLock(!lock);
 }
 
-function Tests({ tests, setTests, logs, setLogs }) {
+function Tests({ tests, setTests }) {
   let [lock, setLock] = useState(true);
   let mode = lock ? "lock" : "unlock";
-  let logsItems = logs.map((log) => {
-    return <span>{log}</span>;
-  });
+
   return (
     <React.Fragment>
       <Row className="title-row">
@@ -195,7 +193,9 @@ function Tests({ tests, setTests, logs, setLogs }) {
         <Col className="tests col-8">
           <TestArea tests={tests} setTests={setTests} />
         </Col>
-        <Col className="logs col-4">{logsItems}</Col>
+        <Col className="logs col-4">
+          <p id="log-area"></p>
+        </Col>
       </Row>
     </React.Fragment>
   );

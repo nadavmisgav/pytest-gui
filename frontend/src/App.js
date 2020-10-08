@@ -14,16 +14,13 @@ function App() {
   let cache = localStorage.getItem("cache");
 
   let init_tests = cache ? JSON.parse(cache).tests : [];
-  let init_logs = cache ? JSON.parse(cache).logs : [];
 
   const [tests, setTests] = useState(init_tests);
-  const [logs, setLogs] = useState(init_logs);
 
   localStorage.setItem(
     "cache",
     JSON.stringify({
       tests,
-      logs,
     })
   );
 
@@ -46,18 +43,8 @@ function App() {
         </Nav> */}
       </Navbar>
       <Container className="inner">
-        <Actions
-          tests={tests}
-          setTests={setTests}
-          logs={logs}
-          setLogs={setLogs}
-        />
-        <Tests
-          tests={tests}
-          setTests={setTests}
-          logs={logs}
-          setLogs={setLogs}
-        />
+        <Actions tests={tests} setTests={setTests} />
+        <Tests tests={tests} setTests={setTests} />
       </Container>
     </div>
   );
