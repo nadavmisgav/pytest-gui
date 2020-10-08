@@ -46,7 +46,7 @@
 .form-group > i {
   position: absolute;
   color: rgb(171, 178, 178);
-  opacity: 50%;
+  opacity: 0.5;
   cursor: pointer;
   right: 10px;
 }

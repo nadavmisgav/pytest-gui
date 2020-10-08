@@ -121,7 +121,7 @@
 
 .test-item > span.running:after {
   content: "";
-  opacity: 50%;
+  opacity: 0.5;
   text-transform: lowercase;
   margin-left: 5px;
   animation-name: running;
@@ -157,7 +157,7 @@
 #toggle-buttons > small {
   margin-left: 10px;
   text-transform: uppercase;
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 #toggle-buttons > small:hover {
@@ -173,7 +173,7 @@
 .title-row > .col > i {
   position: absolute;
   color: rgb(171, 178, 178);
-  opacity: 50%;
+  opacity: 0.5;
   font-size: small;
   right: 15px;
   cursor: pointer;
