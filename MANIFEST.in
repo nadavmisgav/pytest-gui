@@ -1,2 +1,2 @@
 include pytest_gui/backend/api/openapi.all.yaml
-recursive-include frontend/build *
+recursive-include pytest_gui/webapp *

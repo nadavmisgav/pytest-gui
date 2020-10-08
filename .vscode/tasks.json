@@ -21,6 +21,7 @@
         "pipenv run prance compile pytest_gui/backend/api/openapi.yaml pytest_gui/backend/api/openapi.all.yaml &&",
         "pipenv run pipenv-setup sync &&",
         "cd frontend && npm run build && cd ../ &&",
+        "cp -vr frontend/build pytest_gui/webapp &&",
         "python setup.py sdist"
       ],
       "group": "build"

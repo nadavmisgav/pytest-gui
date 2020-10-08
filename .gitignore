@@ -17,6 +17,7 @@ frontend/coverage
 
 # production
 frontend/build
+pytest_gui/webapp
 
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
