@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Collapsible from "react-collapsible";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -165,7 +165,14 @@ function TestArea({ tests, setTests }) {
   );
 }
 
+function handleLock(e, lock, setLock) {
+  e.preventDefault();
+  setLock(!lock);
+}
+
 function Tests({ tests, setTests, logs, setLogs }) {
+  let [lock, setLock] = useState(true);
+  let mode = lock ? "lock" : "unlock";
   let logsItems = logs.map((log) => {
     return <span>{log}</span>;
   });
@@ -177,6 +184,10 @@ function Tests({ tests, setTests, logs, setLogs }) {
         </Col>
         <Col className="col-4">
           <span>Logs</span>
+          <i
+            className={`fas fa-${mode}`}
+            onClick={(e) => handleLock(e, lock, setLock)}
+          ></i>
         </Col>
       </Row>
       <Row className="Tests mb-4">

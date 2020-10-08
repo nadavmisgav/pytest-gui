@@ -138,3 +138,21 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.title-row > .col {
+  display: flex;
+  align-items: center;
+}
+
+.title-row > .col > i {
+  position: absolute;
+  color: rgb(171, 178, 178);
+  opacity: 50%;
+  font-size: small;
+  right: 15px;
+  cursor: pointer;
+}
+
+.title-row > .col > i:hover {
+  transform: scale(1.1);
+}

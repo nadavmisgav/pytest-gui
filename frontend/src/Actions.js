@@ -212,9 +212,6 @@ function Actions({ tests, setTests, logs, setLogs }) {
                     className={`fas fa-trash ${hidden}`}
                     onClick={() => setFilter("")}
                   ></i>
-                  {/* <Form.Text className="text-muted">
-                  Example
-                </Form.Text> */}
                 </Form.Group>
               </Form>
             </Col>
