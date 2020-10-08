@@ -118,6 +118,31 @@
   color: rgb(194, 64, 52);
 }
 
+.test-item > span.running:after {
+  content: "";
+  opacity: 50%;
+  text-transform: lowercase;
+  margin-left: 5px;
+  animation-name: running;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes running {
+  0% {
+    content: "running";
+  }
+  25% {
+    content: "running.";
+  }
+  50% {
+    content: "running..";
+  }
+  100% {
+    content: "running...";
+  }
+}
+
 .test-item > span {
   margin-left: 18px;
 }

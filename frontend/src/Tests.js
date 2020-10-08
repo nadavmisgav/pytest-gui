@@ -32,7 +32,7 @@ function handleModuleCheck(e, tests, setTests, selected) {
   setTests(newTests);
 }
 
-function TestItem({ name, selected, state, module, tests, setTests }) {
+function TestItem({ name, selected, state, running, module, tests, setTests }) {
   let finalState = "";
   if (state) {
     state.forEach((s) => {
@@ -47,7 +47,6 @@ function TestItem({ name, selected, state, module, tests, setTests }) {
   }
 
   let onClick = module ? handleModuleCheck : handleCheck;
-
   let stateFlagClass = "test-result fas fa-flag " + finalState;
   return (
     <div className="test-item">
@@ -62,13 +61,14 @@ function TestItem({ name, selected, state, module, tests, setTests }) {
         ></span>
       </label>
       <i className={stateFlagClass}></i>
-      <span>{name}</span>
+      <span className={running ? "running" : ""}>{name}</span>
+      {/* {running && <span className="running" />} */}
     </div>
   );
 }
 
 function TestModule({ name, tests, setTests, selected }) {
-  const test_items = tests.map(({ id, selected, state }) => {
+  const test_items = tests.map(({ id, selected, state, running }) => {
     return (
       <TestItem
         key={id}
@@ -77,6 +77,7 @@ function TestModule({ name, tests, setTests, selected }) {
         tests={tests}
         setTests={setTests}
         state={state}
+        running={running}
       />
     );
   });

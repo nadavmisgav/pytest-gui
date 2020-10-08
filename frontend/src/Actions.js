@@ -29,6 +29,7 @@ function discover(e, setTests) {
         return {
           selected: true,
           state: ["", "", ""],
+          running: false,
           ...test,
         };
       });
@@ -37,6 +38,7 @@ function discover(e, setTests) {
       toast.success(`Discovered ${tests.length} tests`);
     })
     .catch((err) => {
+      setTests([]);
       toast.error("Failed discovering tests, check log");
     })
     .finally(() => {
@@ -54,6 +56,7 @@ const _translate = {
   call: 1,
   teardown: 2,
 };
+
 function handleStatus(e, tests, setTests) {
   let data = JSON.parse(e.data);
   if (data.when) {
@@ -62,6 +65,20 @@ function handleStatus(e, tests, setTests) {
     let newTests = Array.from(tests);
     let idx = newTests.findIndex((test) => test.nodeid === data.nodeid);
     newTests[idx].state[place] = status;
+    if (data.when == "teardown") {
+      let running_idx = newTests.findIndex((test) => test.running);
+      let next_running_idx =
+        newTests
+          .slice(running_idx + 1)
+          .findIndex((test) => test.selected, running_idx) +
+        running_idx +
+        1;
+
+      if (next_running_idx !== -1) {
+        newTests[next_running_idx].running = true;
+      }
+      newTests[running_idx].running = false;
+    }
     setTests(newTests);
   }
 }
@@ -83,10 +100,10 @@ function startTests(e, tests, setTests, logs, setLogs) {
         nodeid,
         selected,
         state: ["", "", ""],
+        running: false,
       };
     }
   );
-  setTests(newTests);
 
   const selected_tests = newTests.filter((test) => test.selected);
   if (selected_tests.length === 0) {
@@ -105,7 +122,10 @@ function startTests(e, tests, setTests, logs, setLogs) {
 
       logEvents.onmessage = (e) => handleLogs(e, cleanLogs, setLogs);
       statusEvents.onmessage = (e) => handleStatus(e, newTests, setTests);
-
+      newTests[
+        newTests.findIndex((test) => test === selected_tests[0])
+      ].running = true;
+      setTests(newTests);
       toast.success(`Started running tests`);
     })
     .catch((err) => {
@@ -118,7 +138,7 @@ function startTests(e, tests, setTests, logs, setLogs) {
     });
 }
 
-function stopTests(e) {
+function stopTests(e, tests, setTests) {
   e.preventDefault();
   const target = e.target;
   target.classList.add("disabled");
@@ -127,6 +147,13 @@ function stopTests(e) {
   axios
     .get(`${BASE_URL}/stop`)
     .then((res) => {
+      let newTests = tests.map((test) => {
+        return {
+          ...test,
+          running: false,
+        };
+      });
+      setTests(newTests);
       toast.success(`Stopped running tests`);
     })
     .catch((err) => {
@@ -172,7 +199,7 @@ function ActionButtons({ tests, setTests, logs, setLogs }) {
         <ActionButton
           icon="fa-stop"
           description="Stop tests"
-          onClick={stopTests}
+          onClick={(e) => stopTests(e, tests, setTests)}
         />
         <ActionButton
           icon="fa-search"
