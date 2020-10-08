@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
   Col,
@@ -18,13 +18,17 @@ import "./Actions.css";
 
 function discover(e, setTests) {
   e.preventDefault();
+  const target = e.target;
+  target.classList.add("disabled");
+  target.onClick = null;
+
   axios
     .get(`${BASE_URL}/discover`)
     .then((res) => {
       const tests = res.data.map((test) => {
         return {
           selected: true,
-          state: "",
+          state: ["", "", ""],
           ...test,
         };
       });
@@ -34,26 +38,92 @@ function discover(e, setTests) {
     })
     .catch((err) => {
       toast.error("Failed discovering tests, check log");
+    })
+    .finally(() => {
+      target.classList.remove("disabled");
+      target.onClick = (e) => discover(e, setTests);
     });
 }
 
+function handleLogs(e, logs, setLogs) {
+  setLogs([...logs, e.data]);
+}
 
-function startTests(e, tests, setTests) {
+const _translate = {
+  setup: 0,
+  call: 1,
+  teardown: 2,
+};
+function handleStatus(e, tests, setTests) {
+  let data = JSON.parse(e.data);
+  if (data.when) {
+    let status = data.outcome;
+    let place = _translate[data.when];
+    let newTests = Array.from(tests);
+    let idx = newTests.findIndex((test) => test.nodeid === data.nodeid);
+    newTests[idx].state[place] = status;
+    setTests(newTests);
+  }
+}
+
+function startTests(e, tests, setTests, logs, setLogs) {
   e.preventDefault();
-  const selected_tests = tests.filter((test) => test.selected);
+  const target = e.target;
+  target.classList.add("disabled");
+  target.onClick = null;
+  let cleanLogs = [];
+  setLogs(cleanLogs);
+  const newTests = tests.map(
+    ({ file, id, markers, module, nodeid, selected }) => {
+      return {
+        file,
+        id,
+        markers,
+        module,
+        nodeid,
+        selected,
+        state: ["", "", ""],
+      };
+    }
+  );
+  setTests(newTests);
+
+  const selected_tests = newTests.filter((test) => test.selected);
+  if (selected_tests.length === 0) {
+    toast.error("No tests selected");
+    target.classList.remove("disabled");
+    target.onClick = (e) =>
+      startTests(e, newTests, setTests, cleanLogs, setLogs);
+    return;
+  }
 
   axios
     .post(`${BASE_URL}/run`, selected_tests)
     .then((res) => {
+      let logEvents = new EventSource(`${BASE_URL}/logs`);
+      let statusEvents = new EventSource(`${BASE_URL}/status`);
+
+      logEvents.onmessage = (e) => handleLogs(e, cleanLogs, setLogs);
+      statusEvents.onmessage = (e) => handleStatus(e, newTests, setTests);
+
       toast.success(`Started running tests`);
     })
     .catch((err) => {
       toast.error("Failed running tests, check log");
+    })
+    .finally(() => {
+      target.classList.remove("disabled");
+      target.onClick = (e) =>
+        startTests(e, newTests, setTests, cleanLogs, setLogs);
     });
 }
 
 function stopTests(e) {
   e.preventDefault();
+  const target = e.target;
+  target.classList.add("disabled");
+  target.onClick = null;
+
   axios
     .get(`${BASE_URL}/stop`)
     .then((res) => {
@@ -61,6 +131,10 @@ function stopTests(e) {
     })
     .catch((err) => {
       toast.error("Failed stopping tests, check log");
+    })
+    .finally(() => {
+      target.classList.remove("disabled");
+      target.onClick = stopTests;
     });
 }
 
@@ -86,14 +160,14 @@ function ActionButton({ icon, onClick, description }) {
   );
 }
 
-function ActionButtons({ tests, setTests }) {
+function ActionButtons({ tests, setTests, logs, setLogs }) {
   return (
     <Col>
       <Row className="action-buttons">
         <ActionButton
           icon="fa-play"
           description="Start tests"
-          onClick={(e) => startTests(e, tests, setTests)}
+          onClick={(e) => startTests(e, tests, setTests, logs, setLogs)}
         />
         <ActionButton
           icon="fa-stop"
@@ -110,7 +184,13 @@ function ActionButtons({ tests, setTests }) {
   );
 }
 
-function Actions({ tests, setTests }) {
+function formChange(e, setFilter) {
+  setFilter(e.target.value);
+}
+
+function Actions({ tests, setTests, logs, setLogs }) {
+  let [filter, setFilter] = useState("");
+  let hidden = filter === "" ? "hidden" : "";
   return (
     <React.Fragment>
       <Row className="Actions mb-4">
@@ -122,7 +202,16 @@ function Actions({ tests, setTests }) {
             <Col className="col-8">
               <Form>
                 <Form.Group controlId="formFilter">
-                  <Form.Control type="input" placeholder="test name" />
+                  <Form.Control
+                    value={filter}
+                    type="input"
+                    placeholder="TEST NAME"
+                    onChange={(e) => formChange(e, setFilter)}
+                  />
+                  <i
+                    className={`fas fa-trash ${hidden}`}
+                    onClick={() => setFilter("")}
+                  ></i>
                   {/* <Form.Text className="text-muted">
                   Example
                 </Form.Text> */}
@@ -145,7 +234,12 @@ function Actions({ tests, setTests }) {
             </Col>
           </Row>
         </Col>
-        <ActionButtons tests={tests} setTests={setTests} />
+        <ActionButtons
+          tests={tests}
+          setTests={setTests}
+          logs={logs}
+          setLogs={setLogs}
+        />
       </Row>
 
       <ToastContainer

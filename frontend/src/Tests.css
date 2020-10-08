@@ -103,7 +103,7 @@
   transform: translateY(-50%);
 }
 
-.test-item > i.pass {
+.test-item > i.passed {
   display: block;
   color: rgb(152, 191, 121);
 }
@@ -113,7 +113,7 @@
   color: rgb(229, 164, 45);
 }
 
-.test-item > i.fail {
+.test-item > i.failed {
   display: block;
   color: rgb(194, 64, 52);
 }

@@ -9,7 +9,7 @@ def generate_from_queue(worker, queue):
     while worker.tests_running:
         # timeout is a must otherwise we never leave loop
         try:
-            yield queue.get(timeout=1)
+            yield f"data: {queue.get(timeout=1)}\n\n"
         except Empty:
             pass
 

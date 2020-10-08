@@ -5,8 +5,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Tests.css";
 import { Row, Col } from "react-bootstrap";
 
-function handleCheck(e, tests, setTests) {
+function handleCheck(e, tests, setTests, selected) {
   e.stopPropagation();
+  e.preventDefault();
 
   let newTests = tests.slice(0);
   let target_id = e.target.id;
@@ -16,9 +17,38 @@ function handleCheck(e, tests, setTests) {
   setTests(newTests);
 }
 
+function handleModuleCheck(e, tests, setTests, selected) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  let module = e.target.id;
+  let newTests = tests.map((test) => {
+    return {
+      ...test,
+      selected: test.file === module ? !selected : test.selected,
+    };
+  });
+
+  setTests(newTests);
+}
+
 function TestItem({ name, selected, state, module, tests, setTests }) {
-  let stateFlagClass = "test-result fas fa-flag " + state;
-  console.log(stateFlagClass);
+  let finalState = "";
+  if (state) {
+    state.forEach((s) => {
+      if (s === "failed") {
+        finalState = "failed";
+      }
+    });
+
+    if (state.filter((s) => s !== "").length === 3) {
+      finalState = "passed";
+    }
+  }
+
+  let onClick = module ? handleModuleCheck : handleCheck;
+
+  let stateFlagClass = "test-result fas fa-flag " + finalState;
   return (
     <div className="test-item">
       <label className="checkbox-container">
@@ -27,7 +57,7 @@ function TestItem({ name, selected, state, module, tests, setTests }) {
           id={name}
           className="checkmark"
           onClick={(e) => {
-            handleCheck(e, tests, setTests);
+            onClick(e, tests, setTests, selected);
           }}
         ></span>
       </label>
@@ -37,7 +67,7 @@ function TestItem({ name, selected, state, module, tests, setTests }) {
   );
 }
 
-function TestModule({ name, tests, setTests }) {
+function TestModule({ name, tests, setTests, selected }) {
   const test_items = tests.map(({ id, selected, state }) => {
     return (
       <TestItem
@@ -54,7 +84,15 @@ function TestModule({ name, tests, setTests }) {
     <Row className="row-12">
       <Col className="col-12">
         <Collapsible
-          trigger={<TestItem name={name} module={true} />}
+          trigger={
+            <TestItem
+              name={name}
+              module
+              tests={tests}
+              setTests={setTests}
+              selected={selected}
+            />
+          }
           transitionTime={200}
           open={true}
         >
@@ -97,7 +135,15 @@ function Modules({ tests, setTests }) {
   });
 
   const test_modules = modules.map((module) => {
-    return <TestModule key={module["name"]} {...module} setTests={setTests} />;
+    let is_selected = !module.tests.every((test) => !test.selected);
+    return (
+      <TestModule
+        key={module["name"]}
+        {...module}
+        setTests={setTests}
+        selected={is_selected}
+      />
+    );
   });
 
   return test_modules;
@@ -119,7 +165,10 @@ function TestArea({ tests, setTests }) {
   );
 }
 
-function Tests({ tests, setTests, logs }) {
+function Tests({ tests, setTests, logs, setLogs }) {
+  let logsItems = logs.map((log) => {
+    return <span>{log}</span>;
+  });
   return (
     <React.Fragment>
       <Row className="title-row">
@@ -134,9 +183,7 @@ function Tests({ tests, setTests, logs }) {
         <Col className="tests col-8">
           <TestArea tests={tests} setTests={setTests} />
         </Col>
-        <Col className="logs col-4">
-          <p id="log-area">{logs}</p>
-        </Col>
+        <Col className="logs col-4">{logsItems}</Col>
       </Row>
     </React.Fragment>
   );

@@ -14,12 +14,21 @@
   color: rgb(41, 184, 219);
   margin: 0 15px;
   height: fit-content;
+  cursor: pointer;
 }
 
 .action-img:hover {
   transform: scale(1.2);
   transition: 0.2s;
-  cursor: pointer;
+}
+
+.action-img.disabled {
+  color: rgb(171, 178, 178);
+  cursor: default;
+}
+
+.action-img.disabled:hover {
+  transform: none;
 }
 
 .Toastify__toast--success {
@@ -27,6 +36,27 @@
 }
 .Toastify__toast--error {
   background: rgb(194, 64, 52);
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+}
+
+.form-group > i {
+  position: absolute;
+  color: rgb(171, 178, 178);
+  opacity: 50%;
+  cursor: pointer;
+  right: 10px;
+}
+
+.form-group > i:hover {
+  transform: scale(1.1);
+}
+
+.form-group > i.hidden {
+  display: none;
 }
 
 .form-control {
@@ -40,7 +70,7 @@
   border: 1px solid rgb(40, 44, 52);
   border-radius: 0 !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  /* width: 25vh; */
+  /* width: 94%; */
 }
 
 .form-control:focus {

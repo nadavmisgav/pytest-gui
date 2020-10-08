@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import Actions from "./Actions";
@@ -10,24 +10,22 @@ import "./App.css";
 
 export const BASE_URL = "http://localhost:5000/api";
 
-const log = (e) => {
-  console.log(e);
-};
-
 function App() {
-  const [tests, setTests] = useState([]);
-  const [logs, setLogs] = useState([]);
+  let cache = localStorage.getItem("cache");
 
-  let logEvents = new EventSource(`${BASE_URL}/logs`);
-  // let statusEvents = new EventSource(`${BASE_URL}/status`);
+  let init_tests = cache ? JSON.parse(cache).tests : [];
+  let init_logs = cache ? JSON.parse(cache).logs : [];
 
-  logEvents.addEventListener("message", log, false);
-  logEvents.addEventListener("open", log, false);
-  logEvents.addEventListener("error", log, false);
+  const [tests, setTests] = useState(init_tests);
+  const [logs, setLogs] = useState(init_logs);
 
-  // statusEvents.addEventListener("message", log, false);
-  // statusEvents.addEventListener("open", log, false);
-  // statusEvents.addEventListener("error", log, false);
+  localStorage.setItem(
+    "cache",
+    JSON.stringify({
+      tests,
+      logs,
+    })
+  );
 
   return (
     <div className="App">
@@ -48,8 +46,18 @@ function App() {
         </Nav> */}
       </Navbar>
       <Container className="inner">
-        <Actions tests={tests} setTests={setTests} />
-        <Tests tests={tests} setTests={setTests} />
+        <Actions
+          tests={tests}
+          setTests={setTests}
+          logs={logs}
+          setLogs={setLogs}
+        />
+        <Tests
+          tests={tests}
+          setTests={setTests}
+          logs={logs}
+          setLogs={setLogs}
+        />
       </Container>
     </div>
   );
