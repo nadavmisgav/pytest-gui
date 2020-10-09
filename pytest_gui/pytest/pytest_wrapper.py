@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import subprocess
+import sys
 from multiprocessing.connection import Listener
 from queue import Queue
 from threading import Thread
@@ -11,8 +12,13 @@ from decouple import config
 
 logger = logging.getLogger('pytest_gui.backend.main')
 
-
 TEST_DIR = config("PYTEST_GUI_TEST_DIR", default=".")
+if len(sys.argv) == 2:
+    if os.path.isdir(sys.argv[1]):
+        TEST_DIR = sys.argv[1]
+    else:
+        raise ValueError(f"{sys.argv[1]} is not a valid directory")
+
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
 PLUGIN_PATH = "pytest_gui.pytest.pytest_gui_plugin"
 ADDRESS = ('localhost', PLUGIN_PORT)
