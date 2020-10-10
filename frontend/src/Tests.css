@@ -182,3 +182,7 @@
 .title-row > .col > i:hover {
   transform: scale(1.1);
 }
+
+#log-area > p {
+  margin: 0;
+}
