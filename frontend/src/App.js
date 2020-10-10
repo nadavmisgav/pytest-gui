@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import Actions from "./Actions";
@@ -37,11 +37,11 @@ function App() {
             alt="pytest logo"
           />
         </Navbar.Brand>
-        {/* <Nav>
+        {false && <Nav>
           <Nav.Item>
             <Nav.Link href="#reports">reports</Nav.Link>
           </Nav.Item>
-        </Nav> */}
+        </Nav>}
       </Navbar>
       <Container className="inner">
         <Actions tests={tests} setTests={setTests} lock={lock} />
