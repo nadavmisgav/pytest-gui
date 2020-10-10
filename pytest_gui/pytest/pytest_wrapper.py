@@ -120,7 +120,7 @@ class PytestWorker:
             self._remove_proccess(p.pid)
 
         if p.returncode != 0:
-            logger.error(f"Failed to collect tests:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
+            logger.error(f"Failed to collect tests:\nstdout:\n{p.stdout.read()}\nstderr\n{p.stderr.read()}")
             return None
 
         logger.info(f"Collected {len(tests)} tests")
@@ -131,7 +131,7 @@ class PytestWorker:
         p.wait()
         self._remove_proccess(p.pid)
         if p.returncode != 0:
-            logger.error(f"Failed to get markers:\nstdout:\n{p.stdout}\nstderr\n{p.stderr}")
+            logger.error(f"Failed to get markers:\nstdout:\n{p.stdout.read()}\nstderr\n{p.stderr.read()}")
             return None
 
         self.markers = [{"name": name} for name, desc in _filter_only_custom_markers(p.stdout)]
@@ -166,7 +166,8 @@ class PytestWorker:
         logger.info(f"Runing command: {' '.join(command)}")
         my_env = os.environ.copy()
         my_env["PYTHONUNBUFFERED"] = "1"
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, universal_newlines=True, env=my_env)
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             universal_newlines=True, env=my_env)
         logger.debug("Waiting for plugin connection")
         conn = self._listener.accept()
         self._process[p.pid] = p
