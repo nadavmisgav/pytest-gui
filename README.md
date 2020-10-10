@@ -5,15 +5,15 @@ Pytest GUI introduces a web preview of your tests.
 
 ## Features
 
-1. Discovering and collecting tests.
-2. Select test to run.
-3. Running and stopping tests.
-4. Live log view.
-5. Report directory that contains test history.
+- Discovering and collecting tests.
+- Select test to run.
+- Running and stopping tests.
+- Live log view.
+- Report directory that contains test history.
 
 ## Getting started
 
-The project is currently not on pip so follow the build guide.
+The project is currently not on pip so follow the build guide or download the uploaded release.
 
 ### Usage
 
@@ -36,3 +36,7 @@ This package utilizes the Pipenv tool to containerize the dependencies.
 1. Install dependencies `pipenv install --dev`.
 2. Run `npm i` in the frontend directory to install required npm packages.
 3. Run the `vscode` task `Build all` (or follow it).
+
+## License
+
+[MIT](https://github.com/ned3144/pytest-gui/blob/main/LICENSE)
