@@ -1,10 +1,22 @@
+from __future__ import print_function
+
 import json
 import os
 from datetime import datetime
 from multiprocessing.connection import Client
 from os.path import join
 
-from decouple import config
+try:
+    from decouple import config
+except ImportError:
+    from os import environ
+
+    def config(name, cast=None, default=None):
+        if name in environ:
+            return cast(environ[name]) if cast else environ[name]
+        if default:
+            return default
+        raise ValueError("Can't find {}".format(name))
 
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
@@ -25,7 +37,7 @@ _builtin_markers = [
 ]
 
 
-class PytestGuiPlugin:
+class PytestGuiPlugin(object):
     def __init__(self):
         self._conn = Client(ADDRESS)
         self._report_folder = ""
@@ -54,7 +66,10 @@ class PytestGuiPlugin:
     def pytest_runtestloop(self, session):
         timestamp = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
         self._report_folder = join(REPORT_DIR, timestamp)
-        os.makedirs(self._report_folder, exist_ok=False)
+        try:
+            os.makedirs(self._report_folder)
+        except OSError:
+            pass
 
     def pytest_runtest_logreport(self, report):
         # Send result
@@ -72,9 +87,9 @@ class PytestGuiPlugin:
         log_folder = join(self._report_folder, folder, module)
         os.makedirs(log_folder, exist_ok=True)
 
-        log_file = join(log_folder, f"{id_}.log")
+        log_file = join(log_folder, "{}.log".format(id_))
         with open(log_file, "a") as fp:
-            fp.write(f"{report.when}\n")
+            fp.write(report.when + "\n")
             for section in report.sections:
                 fp.writelines(section)
 

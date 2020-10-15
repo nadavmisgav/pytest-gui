@@ -1,2 +1,3 @@
 include pytest_gui/backend/api/openapi.all.yaml
 recursive-include pytest_gui/webapp *
+recursive-exclude dir-pattern pytest_gui/pytest/pytest_gui_plugin/*

@@ -20,7 +20,7 @@ if len(sys.argv) == 2:
         raise ValueError(f"{sys.argv[1]} is not a valid directory")
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
-PLUGIN_PATH = "pytest_gui.pytest.pytest_gui_plugin"
+PLUGIN_PATH = "pytest_gui_plugin"
 ADDRESS = ('localhost', PLUGIN_PORT)
 
 
