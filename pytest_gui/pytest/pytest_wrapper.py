@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from datetime import datetime
 import subprocess
 import sys
 from multiprocessing.connection import Listener
@@ -20,7 +21,9 @@ if len(sys.argv) == 2:
         raise ValueError(f"{sys.argv[1]} is not a valid directory")
 
 PLUGIN_PORT = config("PYTEST_GUI_PLUGIN_PORT", cast=int, default=6000)
-PLUGIN_PATH = "pytest_gui_plugin"
+REPORT_DIR = config("PYTEST_GUI_REPORT_DIR", default=".reports")
+PYTEST = config("PYTEST_GUI_PYTEST", default="pytest")
+PLUGIN_PATH = "pytest_gui_plugin.pytest_gui_plugin"
 ADDRESS = ('localhost', PLUGIN_PORT)
 
 
@@ -57,13 +60,21 @@ class _TestRunner(Thread):
     def __init__(self, worker, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.worker = worker
+        timestamp = datetime.now().strftime("%d_%m_%Y__%H_%M_%S")
+        self._report_folder = os.path.join(REPORT_DIR, timestamp)
+        try:
+            os.makedirs(self._report_folder)
+        except OSError:
+            pass
 
     def run(self):
         try:
-            while self.worker._cur_tests.poll() is None:
-                output = self.worker._cur_tests.stdout.readline()
-                if output != b'':
-                    self.worker.log_queue.put(output.strip())
+            with open(f"{self._report_folder}/session.log", "a") as fp:
+                while self.worker._cur_tests.poll() is None:
+                    output = self.worker._cur_tests.stdout.readline()
+                    if output != b'':
+                        self.worker.log_queue.put(output.strip())
+                        fp.write(f"{output.strip()}\n")
             self.worker._cur_tests.wait()
 
             self.worker._remove_proccess(self.worker._cur_tests.pid)
@@ -162,7 +173,7 @@ class PytestWorker:
         self._cur_tests = None
 
     def _run_pytest(self, *args):
-        command = ['pytest', "--capture=tee-sys", "-p", PLUGIN_PATH] + list(args)
+        command = PYTEST.split(" ") + ["-vs", "-p", PLUGIN_PATH] + list(args)
         logger.info(f"Runing command: {' '.join(command)}")
         my_env = os.environ.copy()
         my_env["PYTHONUNBUFFERED"] = "1"
